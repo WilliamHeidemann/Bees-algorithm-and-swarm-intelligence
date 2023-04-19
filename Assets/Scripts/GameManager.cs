@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour {
     private int normalFov = 60;
 
     public GameObject playerDreadnaught;
-    public GameObject alienMothership;
+    public Mothership alienMothership;
 
 	public GameObject[] enemyList;
 
@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour {
 		//Hide Cursor = false
 		Cursor.visible = true; 
 		asteroids = GameObject.FindGameObjectsWithTag("Environment");
+		alienMothership = FindObjectOfType<Mothership>();
 	}
 	
 	// Update is called once per frame
@@ -39,8 +40,7 @@ public class GameManager : MonoBehaviour {
 	
 		enemyList = GameObject.FindGameObjectsWithTag ("Enemy");
 
-
-        //Check to see if Game Started
+		//Check to see if Game Started
         if(Input.GetKeyDown("space") && gameStarted == false) {
             gameStarted = true;
             playerDreadnaught.SetActive(true);

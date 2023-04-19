@@ -5,13 +5,14 @@ using System.Collections.Generic;
 public class Mothership : MonoBehaviour 
 {
 
-    public GameObject enemy;
+    public Drone enemy;
     public int numberOfEnemies = 20;
 
     public GameObject spawnLocation;
 
-    public List<GameObject> drones = new();
-    public List<GameObject> scouts = new();
+    public List<Drone> drones = new();
+    public List<Drone> scouts = new();
+    public List<Drone> normalForagers = new();
     public int maxScouts = 4;
     public List<GameObject> resourceObjects = new();
     private float forageTimer;
@@ -34,9 +35,18 @@ public class Mothership : MonoBehaviour
     {
         if (scouts.Count < maxScouts)
         {
-            scouts.Add(drones[0]);
-            drones.Remove(drones[0]);
-            scouts[^1].GetComponent<Drone>().droneBehaviour = DroneBehaviours.Scouting;
+            var chosenDrone = drones[0];
+            scouts.Add(chosenDrone);
+            drones.Remove(chosenDrone);
+            chosenDrone.droneBehaviour = DroneBehaviours.Scouting;
+        }
+
+        if (normalForagers.Count < 5 && resourceObjects.Count > 0)
+        {
+            var chosenDrone = drones[0];
+            normalForagers.Add(chosenDrone);
+            drones.Remove(chosenDrone);
+            chosenDrone.droneBehaviour = DroneBehaviours.NormalForaging;
         }
         
         if (resourceObjects.Count > 0 && Time.time > forageTimer) 

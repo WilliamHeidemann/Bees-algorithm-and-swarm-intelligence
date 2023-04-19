@@ -1,13 +1,16 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 using Random = UnityEngine.Random;
 
 public enum DroneBehaviours
 {
     Idle,
     Scouting,
-    Foraging
+    NormalForaging,
+    EliteForaging,
+    Attacking
 }
 
 public class Drone : Enemy 
@@ -34,7 +37,7 @@ public class Drone : Enemy
     private int boidIndex = 0;
 
     public DroneBehaviours droneBehaviour;
-    public GameObject motherShip;
+    public Mothership motherShip;
     public Vector3 scoutPosition;
     
     private float scoutTimer;
@@ -43,9 +46,8 @@ public class Drone : Enemy
     private float detectTime = 5.0f;
     private float detectionRadius = 400.0f;
     private int newResourceVal;
-    public GameObject newResourceObject;
+    private GameObject newResourceObject;
     
-    // Use this for initialization
     void Start() {
 
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -55,17 +57,10 @@ public class Drone : Enemy
         scoutPosition = motherShip.transform.position;
     }
 
-    // Update is called once per frame
-    void Update() {
-
-        //Acquire player if spawned in
-        if (gameManager.gameStarted) target = gameManager.playerDreadnaught;
-
-        //Move towards valid targets
-        if(target) MoveTowardsTarget(target.transform.position);
-
+    void Update()
+    {
+        if (gameManager.gameStarted) droneBehaviour = DroneBehaviours.Attacking;
         BoidBehaviour();
-
         switch (droneBehaviour)
         {
             case DroneBehaviours.Idle:
@@ -73,11 +68,89 @@ public class Drone : Enemy
             case DroneBehaviours.Scouting:
                 Scouting();
                 break;
-            case DroneBehaviours.Foraging:
+            case DroneBehaviours.NormalForaging:
+                NormalForaging();
                 break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            case DroneBehaviours.EliteForaging:
+                EliteForaging();
+                break;
+            case DroneBehaviours.Attacking:
+                Attacking();
+                break;
         }
+    }
+
+    private void EliteForaging()
+    {
+        if (!newResourceObject)
+        {
+            if (!target)
+            {
+                var topResourceObjects = motherShip.resourceObjects.Take(3);
+                var randomIndex = Random.Range(0, topResourceObjects.Count());
+                target = motherShip.resourceObjects[randomIndex];
+            }
+            MoveTowardsTarget(target.transform.position);
+            Debug.DrawLine(transform.position, target.transform.position, Color.blue);
+            if (Vector3.Distance(target.transform.position, transform.position) < targetRadius)
+            {
+                newResourceObject = target;
+            }
+
+            var newFoundResource = DetectNewResources();
+            if (newFoundResource)
+            {
+                
+            }
+        }
+        else
+        {
+            target = motherShip.gameObject;
+            MoveTowardsTarget(target.transform.position);
+            Debug.DrawLine(transform.position, target.transform.position, Color.blue);
+            if (Vector3.Distance(transform.position, motherShip.transform.position) < targetRadius) 
+            {
+                motherShip.drones.Add(this);
+                motherShip.normalForagers.Remove(this);
+                target = null;
+                newResourceObject = null; // Here handing over the resource to the mothership can be implemented
+                droneBehaviour = DroneBehaviours.Idle;
+            }
+        }
+    }
+
+    private void NormalForaging()
+    {
+        if (!newResourceObject)
+        {
+            if(!target) target = motherShip.resourceObjects[0].gameObject;
+            MoveTowardsTarget(target.transform.position);
+            Debug.DrawLine(transform.position, target.transform.position, Color.blue);
+            if (Vector3.Distance(target.transform.position, transform.position) < targetRadius)
+            {
+                newResourceObject = target;
+            }
+        }
+        else
+        {
+            target = motherShip.gameObject;
+            MoveTowardsTarget(target.transform.position);
+            Debug.DrawLine(transform.position, target.transform.position, Color.blue);
+            if (Vector3.Distance(transform.position, motherShip.transform.position) < targetRadius) 
+            {
+                motherShip.drones.Add(this);
+                motherShip.normalForagers.Remove(this);
+                target = null;
+                newResourceObject = null; // Here handing over the resource to the mothership can be implemented
+                droneBehaviour = DroneBehaviours.Idle;
+            }
+        }
+    }
+
+    private void Attacking()
+    {
+        target = gameManager.playerDreadnaught;
+        MoveTowardsTarget(target.transform.position);
     }
 
     private void Scouting()
@@ -86,12 +159,11 @@ public class Drone : Enemy
         {
             if (Vector3.Distance(transform.position, scoutPosition) < detectionRadius && Time.time > scoutTimer) 
             {
-                Vector3 position;
-                position.x = motherShip.transform.position.x + Random.Range(-1500, 1500);
-                position.y = motherShip.transform.position.y + Random.Range(-400, 400);
-                position.z = motherShip.transform.position.z + Random.Range(-1500, 1500);
+                var position = motherShip.transform.position;
+                position.x += Random.Range(-1500, 1500);
+                position.y += Random.Range(-400, 400);
+                position.z += Random.Range(-1500, 1500);
                 scoutPosition = position;
-                
                 scoutTimer = Time.time + scoutTime;
             }
             else
@@ -100,21 +172,23 @@ public class Drone : Enemy
                 Debug.DrawLine(transform.position, scoutPosition, Color.yellow);
             }
             
-            if (Time.time > detectTimer) {
+            if (Time.time > detectTimer) 
+            {
                 newResourceObject = DetectNewResources();
                 detectTimer = Time.time + detectTime;
             }
         }
         else
         {
-            target = motherShip;
+            target = motherShip.gameObject;
+            MoveTowardsTarget(target.transform.position);
             Debug.DrawLine(transform.position, target.transform.position, Color.green);
             
             if (Vector3.Distance(transform.position, motherShip.transform.position) < targetRadius) 
             {
-                motherShip.GetComponent<Mothership>().drones.Add(gameObject);
-                motherShip.GetComponent<Mothership>().scouts.Remove(gameObject);
-                motherShip.GetComponent<Mothership>().resourceObjects.Add(newResourceObject);
+                motherShip.drones.Add(this);
+                motherShip.scouts.Remove(this);
+                motherShip.resourceObjects.Add(newResourceObject);
                 newResourceVal = 0;
                 newResourceObject = null;
                 droneBehaviour = DroneBehaviours.Idle;
@@ -144,15 +218,13 @@ public class Drone : Enemy
         }
     }
 
-    private void MoveTowardsTarget(Vector3 targetPos) {
-        //Rotate and move towards target if out of range
-        if (Vector3.Distance(targetPos, transform.position) > targetRadius) {
-
-            //Lerp Towards target
+    private void MoveTowardsTarget(Vector3 targetPos) 
+    {
+        if (Vector3.Distance(targetPos, transform.position) > targetRadius) 
+        {
             targetRotation = Quaternion.LookRotation(targetPos - transform.position);
             adjRotSpeed = Mathf.Min(rotationSpeed * Time.deltaTime, 1);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, adjRotSpeed);
-
             rb.AddRelativeForce(Vector3.forward * (speed * 20 * Time.deltaTime));
         }
     }

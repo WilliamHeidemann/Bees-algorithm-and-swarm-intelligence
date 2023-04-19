@@ -196,6 +196,9 @@ MonoBehaviour:
   cohesionDistance: 50
   separationStrength: 250
   cohesionStrength: 25
+  droneBehaviour: 0
+  motherShip: {fileID: 0}
+  scoutPosition: {x: 0, y: 0, z: 0}
 --- !u!1 &1468909202175776
 GameObject:
   m_ObjectHideFlags: 0

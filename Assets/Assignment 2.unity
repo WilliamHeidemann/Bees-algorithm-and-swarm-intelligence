@@ -2106,7 +2106,7 @@ MonoBehaviour:
   yInvert: 0
   mainCamera: {fileID: 1849491730}
   playerDreadnaught: {fileID: 517351400}
-  alienMothership: {fileID: 1069572139}
+  alienMothership: {fileID: 1069572142}
   enemyList: []
   gameStarted: 0
   gameOver: 0
@@ -3753,12 +3753,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d440f499f084a6a4bbf7f341f98fba34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemy: {fileID: 1131870754492908, guid: 028b7d853a7752f43bbadf1faec4a8cd, type: 3}
+  enemy: {fileID: 114758207600209994, guid: 028b7d853a7752f43bbadf1faec4a8cd, type: 3}
   numberOfEnemies: 20
   spawnLocation: {fileID: 435373163}
   drones: []
   scouts: []
   maxScouts: 4
+  resourceObjects: []
 --- !u!1 &1125849724 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 125034, guid: 7c7d9ba83b627a8439af1bc6c103b3fb,
