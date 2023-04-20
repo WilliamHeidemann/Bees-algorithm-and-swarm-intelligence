@@ -46,30 +46,19 @@ public class Mothership : MonoBehaviour
         if (ShouldRecruitEliteForagers()) RecruitEliteForagers();
     }
 
-    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < maxEliteForagers && idle.Count > 0;
-    private void RecruitEliteForagers()
+    private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
+    private void RecruitAttackers()
     {
-        while (ShouldRecruitEliteForagers())
+        while (idle.Count > 0) Swap(idle, attackers);
+        while (scouts.Count > 0) Swap(scouts, attackers);
+        while (foragers.Count > 0) Swap(foragers, attackers);
+        while (eliteForagers.Count > 0) Swap(eliteForagers, attackers);
+        foreach (var drone in attackers)
         {
-            Swap(idle, eliteForagers);
-            var eliteForager = eliteForagers[^1];
-            eliteForager.droneBehaviour = new EliteForagingBehaviour(eliteForager);
+            drone.droneBehaviour = new AttackBehaviour(drone);
         }
     }
-
-
-    private bool ShouldRecruitForagers() => foragers.Count < maxForagers && idle.Count > 0;
-    private void RecruitForagers()
-    {
-        while (ShouldRecruitForagers())
-        {
-            Swap(idle, foragers);
-            var forager = foragers[^1];
-            forager.droneBehaviour = new ForagingBehaviour(forager);
-        }
-    }
-
-
+    
     private bool ShouldRecruitScouts() => scouts.Count < maxScouts && idle.Count > 0;
 
     private void RecruitScouts()
@@ -81,17 +70,26 @@ public class Mothership : MonoBehaviour
             scout.droneBehaviour = new ScoutingBehaviour(scout);
         }
     }
-
-    private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
-    private void RecruitAttackers()
+    
+    private bool ShouldRecruitForagers() => foragers.Count < maxForagers && idle.Count > 0;
+    private void RecruitForagers()
     {
-        while (idle.Count > 0) Swap(idle, attackers);
-        while (scouts.Count > 0) Swap(scouts, attackers);
-        while (foragers.Count > 0) Swap(foragers, attackers);
-        while (eliteForagers.Count > 0) Swap(eliteForagers, attackers);
-        foreach (var drone in attackers)
+        while (ShouldRecruitForagers())
         {
-            drone.droneBehaviour = new AttackBehaviour(drone);
+            Swap(idle, foragers);
+            var forager = foragers[^1];
+            forager.droneBehaviour = new ForagingBehaviour(forager);
+        }
+    }
+    
+    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < maxEliteForagers && idle.Count > 0;
+    private void RecruitEliteForagers()
+    {
+        while (ShouldRecruitEliteForagers())
+        {
+            Swap(idle, eliteForagers);
+            var eliteForager = eliteForagers[^1];
+            eliteForager.droneBehaviour = new EliteForagingBehaviour(eliteForager);
         }
     }
 
