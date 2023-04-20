@@ -22,17 +22,14 @@ namespace DroneScripts
 
         private void Foraging()
         {
-            if (!_isResourcePickedUp)
+            if (TargetReached())
             {
-                if (TargetReached())
+                if (!_isResourcePickedUp)
                 {
                     target = motherShip.transform.position;
                     _isResourcePickedUp = true;
                 }
-            }
-            else
-            {
-                if (TargetReached())
+                else
                 {
                     motherShip.idle.Add(drone);
                     motherShip.normalForagers.Remove(drone);
