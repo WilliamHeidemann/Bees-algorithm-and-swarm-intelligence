@@ -29,8 +29,8 @@ public class Drone : Enemy
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawSphere(transform.position, 200);
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     Gizmos.DrawSphere(transform.position, 200);
+    // }
 }

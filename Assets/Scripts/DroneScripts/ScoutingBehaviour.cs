@@ -11,7 +11,7 @@ namespace DroneScripts
         private float detectTimer;
         private float scoutTime = 10.0f;
         private float detectTime = 5.0f;
-        private Asteroid newResourceObject;
+        public Asteroid newResourceObject;
         
         public ScoutingBehaviour(Drone drone) : base(drone)
         {

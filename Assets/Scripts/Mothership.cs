@@ -71,7 +71,7 @@ public class Mothership : MonoBehaviour
         }
     }
     
-    private bool ShouldRecruitForagers() => foragers.Count < maxForagers && idle.Count > 0;
+    private bool ShouldRecruitForagers() => foragers.Count < maxForagers && idle.Count > 0 && resourceObjects.Count > 0;
     private void RecruitForagers()
     {
         while (ShouldRecruitForagers())
@@ -82,7 +82,7 @@ public class Mothership : MonoBehaviour
         }
     }
     
-    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < maxEliteForagers && idle.Count > 0;
+    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < maxEliteForagers && idle.Count > 0 && resourceObjects.Count > 0;
     private void RecruitEliteForagers()
     {
         while (ShouldRecruitEliteForagers())
@@ -115,6 +115,19 @@ public class Mothership : MonoBehaviour
         foragers.Remove(forager);
         idle.Add(forager);
         forager.droneBehaviour = new IdleBehaviour(forager);
+    }
+
+    public void InitiateEliteScouting(Drone eliteForager)
+    {
+        eliteForager.droneBehaviour = new ScoutingBehaviour(eliteForager);
+        StartCoroutine(EliteSearch(eliteForager));
+    }
+
+    private IEnumerator EliteSearch(Drone eliteForager)
+    {
+        yield return new WaitForSeconds(5);
+        // Kun hvis der ikke er fundet noget
+        eliteForager.droneBehaviour = new ForagingBehaviour(eliteForager);
     }
 }
 
