@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Random = UnityEngine.Random;
 
@@ -15,9 +16,7 @@ public enum DroneBehaviours
 
 public class Drone : Enemy 
 {
-
     GameManager gameManager;
-
     Rigidbody rb;
 
     //Movement & Rotation Variables
@@ -27,14 +26,6 @@ public class Drone : Enemy
     private Quaternion targetRotation;
     public GameObject target;
     public float targetRadius = 200f;
-
-    //Boid Steering/Flocking Variables
-    public float separationDistance = 25.0f;
-    public float cohesionDistance = 50.0f;
-    public float separationStrength = 250.0f;
-    public float cohesionStrength = 25.0f;
-    private Vector3 cohesionPos = new(0f, 0f, 0f);
-    private int boidIndex = 0;
 
     public DroneBehaviours droneBehaviour;
     public Mothership motherShip;
@@ -60,7 +51,6 @@ public class Drone : Enemy
     void Update()
     {
         if (gameManager.gameStarted) droneBehaviour = DroneBehaviours.Attacking;
-        BoidBehaviour();
         switch (droneBehaviour)
         {
             case DroneBehaviours.Idle:
@@ -97,11 +87,11 @@ public class Drone : Enemy
                 newResourceObject = target;
             }
 
-            var newFoundResource = DetectNewResources();
-            if (newFoundResource)
+            if (Time.time > detectTimer) 
             {
-                
-            }
+                newResourceObject = DetectNewResources();
+                detectTimer = Time.time + detectTime;
+            } // Elite behaviour
         }
         else
         {
@@ -226,49 +216,6 @@ public class Drone : Enemy
             adjRotSpeed = Mathf.Min(rotationSpeed * Time.deltaTime, 1);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, adjRotSpeed);
             rb.AddRelativeForce(Vector3.forward * (speed * 20 * Time.deltaTime));
-        }
-    }
-    
-    private void BoidBehaviour() 
-    {
-        boidIndex++;
-        if (boidIndex >= gameManager.enemyList.Length) 
-        {
-            var cohesiveForce = (cohesionStrength / Vector3.Distance(cohesionPos,transform.position)) 
-                                * (cohesionPos - transform.position);
-            //Apply Force
-            rb.AddForce(cohesiveForce);
-            //Reset boidIndex
-            boidIndex = 0;
-            //Reset cohesion position
-            cohesionPos.Set(0f, 0f, 0f);
-        }
-
-        //Currently analysed boid variables
-        var pos = gameManager.enemyList[boidIndex].transform.position;
-        var rot = gameManager.enemyList[boidIndex].transform.rotation;
-        var dist = Vector3.Distance(transform.position, pos);
-        
-        //If not this boid
-        if (dist > 0f) 
-        {
-            //If within separation
-            if (dist <= separationDistance) 
-            {
-                //Compute scale of separation
-                var scale = separationStrength / dist;
-                //Apply force to ourselves
-                rb.AddForce(scale * Vector3.Normalize(transform.position - pos));
-            }
-            
-            //Otherwise if within cohesion distance of other boids
-            else if (dist < cohesionDistance && dist > separationDistance) 
-            {
-                //Calculate the current cohesionPos
-                cohesionPos += pos / gameManager.enemyList.Length;
-                //Rotate slightly towards current boid
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 1f);
-            }
         }
     }
 }

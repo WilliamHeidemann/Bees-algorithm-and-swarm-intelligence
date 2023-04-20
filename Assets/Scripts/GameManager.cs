@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour {
 		Cursor.visible = true; 
 		asteroids = GameObject.FindGameObjectsWithTag("Environment");
 		alienMothership = FindObjectOfType<Mothership>();
+		enemyList = GameObject.FindGameObjectsWithTag ("Enemy");
 	}
 	
 	// Update is called once per frame
