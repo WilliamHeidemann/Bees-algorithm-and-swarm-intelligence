@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DroneScripts;
 
 public class Mothership : MonoBehaviour 
 {
@@ -10,9 +11,10 @@ public class Mothership : MonoBehaviour
 
     public GameObject spawnLocation;
 
-    public List<Drone> drones = new();
+    public List<Drone> idle = new();
     public List<Drone> scouts = new();
     public List<Drone> normalForagers = new();
+    public List<Drone> eliteForagers = new();
     public int maxScouts = 4;
     public List<Asteroid> resourceObjects = new();
     private float forageTimer;
@@ -27,26 +29,27 @@ public class Mothership : MonoBehaviour
             spawnPosition.y += Random.Range(-50, 50);
             spawnPosition.z += Random.Range(-50, 50);
             var instantiatedEnemy = Instantiate(enemy, spawnPosition, spawnLocation.transform.rotation);
-            drones.Add(instantiatedEnemy);
+            instantiatedEnemy.droneBehaviour = new IdleBehaviour(instantiatedEnemy);
+            idle.Add(instantiatedEnemy);
         }
     }
 
     void Update()
     {
-        if (scouts.Count < maxScouts)
+        if (scouts.Count < maxScouts && idle.Count > 0)
         {
-            var chosenDrone = drones[0];
+            var chosenDrone = idle[0];
             scouts.Add(chosenDrone);
-            drones.Remove(chosenDrone);
-            //chosenDrone.droneBehaviour = DroneBehaviours.Scouting;
+            idle.Remove(chosenDrone);
+            chosenDrone.droneBehaviour = new ScoutingBehaviour(chosenDrone);
         }
 
-        if (normalForagers.Count < 5 && resourceObjects.Count > 0)
+        if (normalForagers.Count < 5 && resourceObjects.Count > 0 && idle.Count > 0)
         {
-            var chosenDrone = drones[0];
+            var chosenDrone = idle[0];
             normalForagers.Add(chosenDrone);
-            drones.Remove(chosenDrone);
-            //chosenDrone.droneBehaviour = DroneBehaviours.NormalForaging;
+            idle.Remove(chosenDrone);
+            chosenDrone.droneBehaviour = new ForagingBehaviour(chosenDrone);
         }
         
         if (resourceObjects.Count > 0 && Time.time > forageTimer) 

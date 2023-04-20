@@ -35,7 +35,7 @@ namespace DroneScripts
             {
                 if (Vector3.Distance(drone.transform.position, target) < _pickupRadius)
                 {
-                    motherShip.drones.Add(drone);
+                    motherShip.idle.Add(drone);
                     motherShip.normalForagers.Remove(drone);
                     // Here handing over the resource to the mothership can be implemented
                     // Tell the mothership that we are done

@@ -8,7 +8,7 @@ namespace DroneScripts
         protected Vector3 target;
         protected Mothership motherShip;
         protected Color lineColor;
-        private const float Speed = 1000.0f;
+        private const float Speed = 1000f;
         private const float RotationSpeed = 5.0f;
         
         protected DroneBehaviour(Drone drone)

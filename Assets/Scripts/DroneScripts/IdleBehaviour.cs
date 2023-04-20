@@ -4,6 +4,7 @@
     {
         public IdleBehaviour(Drone drone) : base(drone)
         {
+            target = drone.transform.position;
         }
     }
 }

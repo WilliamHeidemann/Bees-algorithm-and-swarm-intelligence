@@ -13,8 +13,8 @@ public class Drone : Enemy
     public Rigidbody rb;
     public DroneBehaviour droneBehaviour;
     
-    void Start() {
-
+    void Start() 
+    {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         motherShip = gameManager.alienMothership;
         rb = GetComponent<Rigidbody>();

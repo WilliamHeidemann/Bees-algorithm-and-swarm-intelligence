@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace DroneScripts
 {
@@ -15,6 +17,7 @@ namespace DroneScripts
         
         public ScoutingBehaviour(Drone drone) : base(drone)
         {
+            target = NewScoutPosition();
         }
 
         public override void Execute()
@@ -41,7 +44,7 @@ namespace DroneScripts
             lineColor = Color.green;
             if (TargetReached())
             {
-                motherShip.drones.Add(drone);
+                motherShip.idle.Add(drone);
                 motherShip.scouts.Remove(drone);
                 motherShip.resourceObjects.Add(newResourceObject);
                 newResourceVal = 0;
@@ -87,6 +90,7 @@ namespace DroneScripts
         private bool DetectNewResources(out Asteroid asteroid)
         {
             var nearby = Physics.SphereCastAll(drone.transform.position, detectionRadius, Vector3.zero);
+            Console.WriteLine("Stuff found: " + nearby.Length);
             var unknownAsteroids = nearby
                 .Where(hit => hit.collider.GetComponent<Asteroid>() != null)
                 .Select(hit => hit.collider.GetComponent<Asteroid>())
