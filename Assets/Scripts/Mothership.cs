@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DroneScripts;
+using Random = UnityEngine.Random;
 
 public class Mothership : MonoBehaviour 
 {
@@ -11,14 +14,15 @@ public class Mothership : MonoBehaviour
 
     public GameObject spawnLocation;
 
-    public List<Drone> idle = new();
-    public List<Drone> scouts = new();
-    public List<Drone> normalForagers = new();
-    public List<Drone> eliteForagers = new();
-    public int maxScouts = 4;
+    private List<Drone> idle = new();
+    private List<Drone> attackers = new();
+    private List<Drone> scouts = new();
+    private List<Drone> foragers = new();
+    private List<Drone> eliteForagers = new();
+    private int maxScouts = 4;
+    private int maxForagers = 4;
+    private int maxEliteForagers = 8;
     public List<Asteroid> resourceObjects = new();
-    private float forageTimer;
-    private float forageTime = 10.0f;
     
     void Start()
     {
@@ -36,27 +40,83 @@ public class Mothership : MonoBehaviour
 
     void Update()
     {
-        if (scouts.Count < maxScouts && idle.Count > 0)
-        {
-            var chosenDrone = idle[0];
-            scouts.Add(chosenDrone);
-            idle.Remove(chosenDrone);
-            chosenDrone.droneBehaviour = new ScoutingBehaviour(chosenDrone);
-        }
+        if (ShouldRecruitAttackers()) RecruitAttackers();
+        if (ShouldRecruitScouts()) RecruitScouts();
+        if (ShouldRecruitForagers()) RecruitForagers();
+        if (ShouldRecruitEliteForagers()) RecruitEliteForagers();
+    }
 
-        if (normalForagers.Count < 5 && resourceObjects.Count > 0 && idle.Count > 0)
+    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < maxEliteForagers && idle.Count > 0;
+    private void RecruitEliteForagers()
+    {
+        while (ShouldRecruitEliteForagers())
         {
-            var chosenDrone = idle[0];
-            normalForagers.Add(chosenDrone);
-            idle.Remove(chosenDrone);
-            chosenDrone.droneBehaviour = new ForagingBehaviour(chosenDrone);
+            Swap(idle, eliteForagers);
+            var eliteForager = eliteForagers[^1];
+            eliteForager.droneBehaviour = new EliteForagingBehaviour(eliteForager);
         }
-        
-        if (resourceObjects.Count > 0 && Time.time > forageTimer) 
+    }
+
+
+    private bool ShouldRecruitForagers() => foragers.Count < maxForagers && idle.Count > 0;
+    private void RecruitForagers()
+    {
+        while (ShouldRecruitForagers())
         {
-            resourceObjects.Sort((a, b) => b.GetComponent<Asteroid>().resource.CompareTo(a.GetComponent<Asteroid>().resource));
-            forageTimer = Time.time + forageTime;
+            Swap(idle, foragers);
+            var forager = foragers[^1];
+            forager.droneBehaviour = new ForagingBehaviour(forager);
         }
+    }
+
+
+    private bool ShouldRecruitScouts() => scouts.Count < maxScouts && idle.Count > 0;
+
+    private void RecruitScouts()
+    {
+        while (ShouldRecruitScouts())
+        {
+            Swap(idle, scouts);
+            var scout = scouts[^1];
+            scout.droneBehaviour = new ScoutingBehaviour(scout);
+        }
+    }
+
+    private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
+    private void RecruitAttackers()
+    {
+        while (idle.Count > 0) Swap(idle, attackers);
+        while (scouts.Count > 0) Swap(scouts, attackers);
+        while (foragers.Count > 0) Swap(foragers, attackers);
+        while (eliteForagers.Count > 0) Swap(eliteForagers, attackers);
+        foreach (var drone in attackers)
+        {
+            drone.droneBehaviour = new AttackBehaviour(drone);
+        }
+    }
+
+    private void Swap(ICollection<Drone> from, ICollection<Drone> to)
+    {
+        var drone = idle[0];
+        from.Remove(drone);
+        to.Add(drone);
+    }
+    
+    public void DiscoverResource(Asteroid asteroid, Drone scout)
+    {
+        resourceObjects.Add(asteroid);
+        resourceObjects.Sort((a, b) => b.resource.CompareTo(a.resource));
+        scouts.Remove(scout);
+        idle.Add(scout);
+        scout.droneBehaviour = new IdleBehaviour(scout);
+    }
+
+    public void CollectResource(Asteroid asteroid, Drone forager)
+    {
+        // resource pool += asteroid.resource
+        foragers.Remove(forager);
+        idle.Add(forager);
+        forager.droneBehaviour = new IdleBehaviour(forager);
     }
 }
 

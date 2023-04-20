@@ -11,7 +11,6 @@ namespace DroneScripts
         private float detectTimer;
         private float scoutTime = 10.0f;
         private float detectTime = 5.0f;
-        private int newResourceVal;
         private Asteroid newResourceObject;
         
         public ScoutingBehaviour(Drone drone) : base(drone)
@@ -43,12 +42,7 @@ namespace DroneScripts
             lineColor = Color.green;
             if (TargetReached())
             {
-                motherShip.idle.Add(drone);
-                motherShip.scouts.Remove(drone);
-                motherShip.resourceObjects.Add(newResourceObject);
-                newResourceVal = 0;
-                newResourceObject = null;
-                // Tell mothership to do this, and have it send an idle state to the drone
+                motherShip.DiscoverResource(newResourceObject, drone);
             }
         }
 

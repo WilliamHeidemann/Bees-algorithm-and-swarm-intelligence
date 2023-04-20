@@ -31,10 +31,7 @@ namespace DroneScripts
                 }
                 else
                 {
-                    motherShip.idle.Add(drone);
-                    motherShip.normalForagers.Remove(drone);
-                    // Here handing over the resource to the mothership can be implemented
-                    // Tell the mothership that we are done
+                    motherShip.CollectResource(_resourceToCollect, drone);
                 }
             }
         }

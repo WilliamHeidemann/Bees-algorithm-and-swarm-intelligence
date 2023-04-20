@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class GameManager : MonoBehaviour {
@@ -26,6 +27,10 @@ public class GameManager : MonoBehaviour {
 
 	public bool gameOver = false;
 
+	private void Awake()
+	{
+		Instance = this;
+	}
 
 	// Use this for initialization
 	void Start () {
