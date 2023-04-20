@@ -8,6 +8,7 @@ namespace DroneScripts
         protected Vector3 target;
         protected Mothership motherShip;
         protected Color lineColor;
+        protected readonly float detectionRadius = 200.0f;
         private const float Speed = 1000f;
         private const float RotationSpeed = 5.0f;
         
@@ -30,5 +31,7 @@ namespace DroneScripts
             drone.rb.AddRelativeForce(Vector3.forward * (Speed * Time.deltaTime));
             Debug.DrawLine(drone.transform.position, target, lineColor);
         }
+
+        protected bool TargetReached() => Vector3.Distance(drone.transform.position, target) < detectionRadius;
     }
 }

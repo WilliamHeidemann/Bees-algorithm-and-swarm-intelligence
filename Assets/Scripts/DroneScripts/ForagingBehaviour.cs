@@ -6,7 +6,6 @@ namespace DroneScripts
     {
         private Asteroid _resourceToCollect;
         private bool _isResourcePickedUp;
-        protected float _pickupRadius = 200f;
         
         public ForagingBehaviour(Drone drone) : base(drone)
         {
@@ -25,7 +24,7 @@ namespace DroneScripts
         {
             if (!_isResourcePickedUp)
             {
-                if (Vector3.Distance(drone.transform.position, target) < _pickupRadius)
+                if (TargetReached())
                 {
                     target = motherShip.transform.position;
                     _isResourcePickedUp = true;
@@ -33,7 +32,7 @@ namespace DroneScripts
             }
             else
             {
-                if (Vector3.Distance(drone.transform.position, target) < _pickupRadius)
+                if (TargetReached())
                 {
                     motherShip.idle.Add(drone);
                     motherShip.normalForagers.Remove(drone);

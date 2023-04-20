@@ -28,4 +28,9 @@ public class Drone : Enemy
             // Enter attacking mode
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawSphere(transform.position, 200);
+    }
 }

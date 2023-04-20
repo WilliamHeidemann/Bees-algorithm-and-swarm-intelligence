@@ -11,7 +11,6 @@ namespace DroneScripts
         private float detectTimer;
         private float scoutTime = 10.0f;
         private float detectTime = 5.0f;
-        private float detectionRadius = 400.0f;
         private int newResourceVal;
         private Asteroid newResourceObject;
         
@@ -56,7 +55,7 @@ namespace DroneScripts
         private void SeekNewAsteroid()
         {
             lineColor = Color.yellow;
-            if (TargetReached())
+            if (TargetReached() && Time.time > scoutTimer)
             {
                 target = NewScoutPosition();
             }
@@ -71,12 +70,7 @@ namespace DroneScripts
                 detectTimer = Time.time + detectTime;
             }
         }
-
-        private bool TargetReached()
-        {
-            return Vector3.Distance(drone.transform.position, target) < detectionRadius && Time.time > scoutTimer;
-        }
-
+        
         private Vector3 NewScoutPosition()
         {
             var position = motherShip.transform.position;
@@ -89,8 +83,7 @@ namespace DroneScripts
 
         private bool DetectNewResources(out Asteroid asteroid)
         {
-            var nearby = Physics.SphereCastAll(drone.transform.position, detectionRadius, Vector3.zero);
-            Console.WriteLine("Stuff found: " + nearby.Length);
+            var nearby = Physics.SphereCastAll(drone.transform.position, detectionRadius, drone.transform.forward);
             var unknownAsteroids = nearby
                 .Where(hit => hit.collider.GetComponent<Asteroid>() != null)
                 .Select(hit => hit.collider.GetComponent<Asteroid>())
