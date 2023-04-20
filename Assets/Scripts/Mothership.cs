@@ -14,7 +14,7 @@ public class Mothership : MonoBehaviour
     public List<Drone> scouts = new();
     public List<Drone> normalForagers = new();
     public int maxScouts = 4;
-    public List<GameObject> resourceObjects = new();
+    public List<Asteroid> resourceObjects = new();
     private float forageTimer;
     private float forageTime = 10.0f;
     
@@ -38,7 +38,7 @@ public class Mothership : MonoBehaviour
             var chosenDrone = drones[0];
             scouts.Add(chosenDrone);
             drones.Remove(chosenDrone);
-            chosenDrone.droneBehaviour = DroneBehaviours.Scouting;
+            //chosenDrone.droneBehaviour = DroneBehaviours.Scouting;
         }
 
         if (normalForagers.Count < 5 && resourceObjects.Count > 0)
@@ -46,7 +46,7 @@ public class Mothership : MonoBehaviour
             var chosenDrone = drones[0];
             normalForagers.Add(chosenDrone);
             drones.Remove(chosenDrone);
-            chosenDrone.droneBehaviour = DroneBehaviours.NormalForaging;
+            //chosenDrone.droneBehaviour = DroneBehaviours.NormalForaging;
         }
         
         if (resourceObjects.Count > 0 && Time.time > forageTimer) 
