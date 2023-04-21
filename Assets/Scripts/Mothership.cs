@@ -8,7 +8,6 @@ using Random = UnityEngine.Random;
 
 public class Mothership : MonoBehaviour 
 {
-
     public Drone enemy;
     public int numberOfEnemies = 20;
 
@@ -20,8 +19,8 @@ public class Mothership : MonoBehaviour
     private List<Drone> foragers = new();
     private List<Drone> eliteForagers = new();
     private int maxScouts = 4;
-    private int maxForagers = 4;
-    private int maxEliteForagers = 8;
+    private int maxForagers = 5;
+    private int maxEliteForagers = 5;
     public List<Asteroid> resourceObjects = new();
     
     void Start()
@@ -49,23 +48,23 @@ public class Mothership : MonoBehaviour
     private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
     private void RecruitAttackers()
     {
-        while (idle.Count > 0) Swap(idle, attackers);
-        while (scouts.Count > 0) Swap(scouts, attackers);
-        while (foragers.Count > 0) Swap(foragers, attackers);
-        while (eliteForagers.Count > 0) Swap(eliteForagers, attackers);
+        while (idle.Count > 0) Assign(idle, attackers);
+        while (scouts.Count > 0) Assign(scouts, attackers);
+        while (foragers.Count > 0) Assign(foragers, attackers);
+        while (eliteForagers.Count > 0) Assign(eliteForagers, attackers);
         foreach (var drone in attackers)
         {
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
     }
     
-    private bool ShouldRecruitScouts() => scouts.Count < maxScouts && idle.Count > 0;
+    private bool ShouldRecruitScouts() => (scouts.Count < maxScouts || resourceObjects.Count == 0) && idle.Count > 0;
 
     private void RecruitScouts()
     {
         while (ShouldRecruitScouts())
         {
-            Swap(idle, scouts);
+            Assign(idle, scouts);
             var scout = scouts[^1];
             scout.droneBehaviour = new ScoutingBehaviour(scout);
         }
@@ -76,7 +75,7 @@ public class Mothership : MonoBehaviour
     {
         while (ShouldRecruitForagers())
         {
-            Swap(idle, foragers);
+            Assign(idle, foragers);
             var forager = foragers[^1];
             forager.droneBehaviour = new ForagingBehaviour(forager);
         }
@@ -87,15 +86,21 @@ public class Mothership : MonoBehaviour
     {
         while (ShouldRecruitEliteForagers())
         {
-            Swap(idle, eliteForagers);
+            Assign(idle, eliteForagers);
             var eliteForager = eliteForagers[^1];
             eliteForager.droneBehaviour = new EliteForagingBehaviour(eliteForager);
         }
     }
 
-    private void Swap(ICollection<Drone> from, ICollection<Drone> to)
+    private static void Assign(List<Drone> from, List<Drone> to)
     {
-        var drone = idle[0];
+        var drone = from[0];
+        from.Remove(drone);
+        to.Add(drone);
+    }
+
+    private static void Swap(Drone drone, List<Drone> from, List<Drone> to)
+    {
         from.Remove(drone);
         to.Add(drone);
     }
@@ -104,21 +109,20 @@ public class Mothership : MonoBehaviour
     {
         resourceObjects.Add(asteroid);
         resourceObjects.Sort((a, b) => b.resource.CompareTo(a.resource));
-        scouts.Remove(scout);
-        idle.Add(scout);
+        Swap(scout, scouts, idle);
         scout.droneBehaviour = new IdleBehaviour(scout);
     }
 
     public void CollectResource(Asteroid asteroid, Drone forager)
     {
         // resource pool += asteroid.resource
-        foragers.Remove(forager);
-        idle.Add(forager);
+        Swap(forager, foragers, idle);
         forager.droneBehaviour = new IdleBehaviour(forager);
     }
 
     public void InitiateEliteScouting(Drone eliteForager)
     {
+        Swap(eliteForager, eliteForagers, scouts);
         eliteForager.droneBehaviour = new ScoutingBehaviour(eliteForager);
         StartCoroutine(EliteSearch(eliteForager));
     }
@@ -126,8 +130,12 @@ public class Mothership : MonoBehaviour
     private IEnumerator EliteSearch(Drone eliteForager)
     {
         yield return new WaitForSeconds(5);
-        // Kun hvis der ikke er fundet noget
-        eliteForager.droneBehaviour = new ForagingBehaviour(eliteForager);
+        var scoutBehaviour = (ScoutingBehaviour)eliteForager.droneBehaviour;
+        if (!scoutBehaviour.newResourceObject)
+        {
+            Swap(eliteForager, eliteForagers, foragers);
+            eliteForager.droneBehaviour = new ForagingBehaviour(eliteForager);
+        }
     }
 }
 

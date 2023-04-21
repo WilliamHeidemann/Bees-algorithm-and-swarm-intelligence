@@ -3756,9 +3756,6 @@ MonoBehaviour:
   enemy: {fileID: 114758207600209994, guid: 028b7d853a7752f43bbadf1faec4a8cd, type: 3}
   numberOfEnemies: 20
   spawnLocation: {fileID: 435373163}
-  drones: []
-  scouts: []
-  maxScouts: 4
   resourceObjects: []
 --- !u!1 &1125849724 stripped
 GameObject:

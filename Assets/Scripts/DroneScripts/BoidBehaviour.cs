@@ -42,15 +42,15 @@ namespace DroneScripts
             var pos = gameManager.enemyList[boidIndex].transform.position;
             var rot = gameManager.enemyList[boidIndex].transform.rotation;
             var dist = Vector3.Distance(transform.position, pos);
-        
+
             if (dist > 0f) 
             {
-                if (dist <= separationDistance) 
+                if (InSeparationRange(dist)) 
                 {
                     var scale = separationStrength / dist;
                     rb.AddForce(scale * Vector3.Normalize(transform.position - pos));
                 }
-                else if (dist < cohesionDistance && dist > separationDistance) 
+                else if (InCohesionRange(dist)) 
                 {
                     cohesionPos += pos / gameManager.enemyList.Length;
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 1f);
@@ -58,5 +58,14 @@ namespace DroneScripts
             }
         }
 
+        private bool InSeparationRange(float dist)
+        {
+            return dist <= separationDistance;
+        }
+
+        private bool InCohesionRange(float dist)
+        {
+            return dist < cohesionDistance && dist > separationDistance;
+        }
     }
 }

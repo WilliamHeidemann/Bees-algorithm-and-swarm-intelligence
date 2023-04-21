@@ -190,12 +190,9 @@ MonoBehaviour:
   health: 100
   deathEffect: {fileID: 168250, guid: 5eb4293102a9d694ebf1affc13c4cff0, type: 3}
   deathSound: {fileID: 103974, guid: 5682ac4627f4d5248bd4fdbc79756da8, type: 3}
-  speed: 50
-  target: {fileID: 0}
-  targetRadius: 200
-  droneBehaviour: 0
+  gameManager: {fileID: 0}
   motherShip: {fileID: 0}
-  scoutPosition: {x: 0, y: 0, z: 0}
+  rb: {fileID: 0}
 --- !u!114 &7842054084723565826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,7 +207,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   separationDistance: 25
   cohesionDistance: 50
-  separationStrength: 250
+  separationStrength: 2500
   cohesionStrength: 25
 --- !u!1 &1468909202175776
 GameObject:

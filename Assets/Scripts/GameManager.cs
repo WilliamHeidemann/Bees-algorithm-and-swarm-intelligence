@@ -30,13 +30,13 @@ public class GameManager : MonoBehaviour {
 	private void Awake()
 	{
 		Instance = this;
+		asteroids = GameObject.FindGameObjectsWithTag("Environment");
 	}
 
 	// Use this for initialization
 	void Start () {
 		//Hide Cursor = false
 		Cursor.visible = true; 
-		asteroids = GameObject.FindGameObjectsWithTag("Environment");
 		alienMothership = FindObjectOfType<Mothership>();
 		enemyList = GameObject.FindGameObjectsWithTag ("Enemy");
 	}
