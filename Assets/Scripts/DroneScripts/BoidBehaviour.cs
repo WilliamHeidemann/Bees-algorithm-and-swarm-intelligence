@@ -24,48 +24,58 @@ namespace DroneScripts
 
         private void Update()
         {
-            Simulate();
+            CalculateBoidValues();
+            ApplyBoidSteering();
         }
 
-        private void Simulate() 
+        private Vector3 flockDirection;
+        private Vector3 flockCentre;
+        private Vector3 separationDirection;
+        private int boidsInCohesionRange;
+
+        private Vector3 acceleration;
+        
+        private void CalculateBoidValues()
         {
-            boidIndex++;
-            if (boidIndex >= gameManager.enemyList.Length) 
+            flockDirection = Vector3.zero;
+            flockCentre = Vector3.zero;
+            separationDirection = Vector3.zero;
+            boidsInCohesionRange = 0;
+
+            var boids = gameManager.enemyList;
+            foreach (var boid in boids)
             {
-                var cohesiveForce = (cohesionStrength / Vector3.Distance(cohesionPos,transform.position)) 
-                                    * (cohesionPos - transform.position);
-                rb.AddForce(cohesiveForce);
-                boidIndex = 0;
-                cohesionPos.Set(0f, 0f, 0f);
-            }
-
-            var pos = gameManager.enemyList[boidIndex].transform.position;
-            var rot = gameManager.enemyList[boidIndex].transform.rotation;
-            var dist = Vector3.Distance(transform.position, pos);
-
-            if (dist > 0f) 
-            {
-                if (InSeparationRange(dist)) 
+                var offset = boid.transform.position - transform.position;
+                var distance = Vector3.Magnitude(offset);
+                if (distance == 0) continue;
+                if (distance < cohesionDistance)
                 {
-                    var scale = separationStrength / dist;
-                    rb.AddForce(scale * Vector3.Normalize(transform.position - pos));
-                }
-                else if (InCohesionRange(dist)) 
-                {
-                    cohesionPos += pos / gameManager.enemyList.Length;
-                    transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 1f);
+                    boidsInCohesionRange += 1;
+                    flockDirection += boid.transform.forward;
+                    flockCentre += boid.transform.position;
+                    if (distance < separationDistance)
+                    {
+                        separationDirection -= offset / distance;
+                    }
                 }
             }
+            flockCentre /= boidsInCohesionRange;
         }
-
-        private bool InSeparationRange(float dist)
+        
+        private void ApplyBoidSteering()
         {
-            return dist <= separationDistance;
-        }
+            acceleration = Vector3.zero;
+            
+            var alignmentForce = flockDirection;
+            var cohesionForce = flockCentre - transform.position;
+            var separationForce = separationDirection * 50;
+            print(separationForce);
+            acceleration += alignmentForce;
+            acceleration += cohesionForce;
+            acceleration += separationForce;
 
-        private bool InCohesionRange(float dist)
-        {
-            return dist < cohesionDistance && dist > separationDistance;
+            rb.AddForce(acceleration);
+            transform.forward = rb.velocity;
         }
     }
 }

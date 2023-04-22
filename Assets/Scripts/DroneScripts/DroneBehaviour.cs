@@ -27,8 +27,8 @@ namespace DroneScripts
         {
             var targetRotation = Quaternion.LookRotation(target - drone.transform.position);
             var adjRotSpeed = Mathf.Min(RotationSpeed * Time.deltaTime, 1);
-            drone.transform.rotation = Quaternion.Lerp(drone.transform.rotation, targetRotation, adjRotSpeed);
-            drone.rb.AddRelativeForce(Vector3.forward * (Speed * Time.deltaTime));
+            //drone.transform.rotation = Quaternion.Lerp(drone.transform.rotation, targetRotation, adjRotSpeed);
+            //drone.rb.AddRelativeForce(Vector3.forward * (Speed * Time.deltaTime));
             Debug.DrawLine(drone.transform.position, target, lineColor);
         }
 

@@ -31,7 +31,7 @@ public class Mothership : MonoBehaviour
             spawnPosition.x += Random.Range(-50, 50);
             spawnPosition.y += Random.Range(-50, 50);
             spawnPosition.z += Random.Range(-50, 50);
-            var instantiatedEnemy = Instantiate(enemy, spawnPosition, spawnLocation.transform.rotation);
+            var instantiatedEnemy = Instantiate(enemy, spawnPosition, Random.rotation);
             instantiatedEnemy.droneBehaviour = new IdleBehaviour(instantiatedEnemy);
             idle.Add(instantiatedEnemy);
         }
@@ -39,6 +39,7 @@ public class Mothership : MonoBehaviour
 
     void Update()
     {
+        return;
         if (ShouldRecruitAttackers()) RecruitAttackers();
         if (ShouldRecruitScouts()) RecruitScouts();
         if (ShouldRecruitForagers()) RecruitForagers();
@@ -127,14 +128,14 @@ public class Mothership : MonoBehaviour
         StartCoroutine(EliteSearch(eliteForager));
     }
 
-    private IEnumerator EliteSearch(Drone eliteForager)
+    private IEnumerator EliteSearch(Drone scoutingEliteForager)
     {
         yield return new WaitForSeconds(5);
-        var scoutBehaviour = (ScoutingBehaviour)eliteForager.droneBehaviour;
+        var scoutBehaviour = (ScoutingBehaviour)scoutingEliteForager.droneBehaviour;
         if (!scoutBehaviour.newResourceObject)
         {
-            Swap(eliteForager, eliteForagers, foragers);
-            eliteForager.droneBehaviour = new ForagingBehaviour(eliteForager);
+            Swap(scoutingEliteForager, eliteForagers, foragers);
+            scoutingEliteForager.droneBehaviour = new ForagingBehaviour(scoutingEliteForager);
         }
     }
 }
