@@ -9,8 +9,6 @@ namespace DroneScripts
         protected Mothership motherShip;
         protected Color lineColor;
         protected readonly float detectionRadius = 200.0f;
-        private const float Speed = 1000f;
-        private const float RotationSpeed = 5.0f;
         
         protected DroneBehaviour(Drone drone)
         {
@@ -25,10 +23,13 @@ namespace DroneScripts
 
         private void MoveTowardsTarget()
         {
-            var targetRotation = Quaternion.LookRotation(target - drone.transform.position);
-            var adjRotSpeed = Mathf.Min(RotationSpeed * Time.deltaTime, 1);
-            //drone.transform.rotation = Quaternion.Lerp(drone.transform.rotation, targetRotation, adjRotSpeed);
-            //drone.rb.AddRelativeForce(Vector3.forward * (Speed * Time.deltaTime));
+            if (Vector3.Distance(drone.transform.position, target) < 1) return;
+            var directionForce = (target - drone.transform.position).normalized;
+            drone.rb.AddForce(directionForce * 20f);
+            // var targetRotation = Quaternion.LookRotation(target - drone.transform.position);
+            // var adjRotSpeed = Mathf.Min(RotationSpeed * Time.deltaTime, 1);
+            // drone.transform.rotation = Quaternion.Lerp(drone.transform.rotation, targetRotation, adjRotSpeed);
+            // drone.rb.AddRelativeForce(Vector3.forward * (Speed * Time.deltaTime));
             Debug.DrawLine(drone.transform.position, target, lineColor);
         }
 

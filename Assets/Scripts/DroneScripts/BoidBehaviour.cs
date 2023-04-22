@@ -13,9 +13,13 @@ namespace DroneScripts
         public float cohesionDistance = 50.0f;
         public float separationStrength = 250.0f;
         public float cohesionStrength = 25.0f;
-        private Vector3 cohesionPos = new(0f, 0f, 0f);
-        private int boidIndex = 0;
 
+        private Vector3 _flockDirection;
+        private Vector3 _flockCentre;
+        private Vector3 _separationDirection;
+        private int _boidsInCohesionRange;
+
+        private Vector3 _acceleration;
         private void Start()
         {
             gameManager = FindObjectOfType<GameManager>();
@@ -27,20 +31,13 @@ namespace DroneScripts
             CalculateBoidValues();
             ApplyBoidSteering();
         }
-
-        private Vector3 flockDirection;
-        private Vector3 flockCentre;
-        private Vector3 separationDirection;
-        private int boidsInCohesionRange;
-
-        private Vector3 acceleration;
         
         private void CalculateBoidValues()
         {
-            flockDirection = Vector3.zero;
-            flockCentre = Vector3.zero;
-            separationDirection = Vector3.zero;
-            boidsInCohesionRange = 0;
+            _flockDirection = Vector3.zero;
+            _flockCentre = Vector3.zero;
+            _separationDirection = Vector3.zero;
+            _boidsInCohesionRange = 0;
 
             var boids = gameManager.enemyList;
             foreach (var boid in boids)
@@ -50,32 +47,33 @@ namespace DroneScripts
                 if (distance == 0) continue;
                 if (distance < cohesionDistance)
                 {
-                    boidsInCohesionRange += 1;
-                    flockDirection += boid.transform.forward;
-                    flockCentre += boid.transform.position;
+                    _boidsInCohesionRange += 1;
+                    _flockDirection += boid.transform.forward;
+                    _flockCentre += boid.transform.position;
                     if (distance < separationDistance)
                     {
-                        separationDirection -= offset / distance;
+                        _separationDirection -= offset / distance;
                     }
                 }
             }
-            flockCentre /= boidsInCohesionRange;
+            if (_boidsInCohesionRange > 0) _flockCentre /= _boidsInCohesionRange;
         }
         
         private void ApplyBoidSteering()
         {
-            acceleration = Vector3.zero;
+            _acceleration = Vector3.zero;
             
-            var alignmentForce = flockDirection;
-            var cohesionForce = flockCentre - transform.position;
-            var separationForce = separationDirection * 50;
-            print(separationForce);
-            acceleration += alignmentForce;
-            acceleration += cohesionForce;
-            acceleration += separationForce;
+            var alignmentForce = _flockDirection;
+            var cohesionForce = (_flockCentre - transform.position) * cohesionStrength;
+            var separationForce = _separationDirection * separationStrength;
 
-            rb.AddForce(acceleration);
+            _acceleration += alignmentForce;
+            _acceleration += cohesionForce;
+            _acceleration += separationForce;
+
+            rb.AddForce(_acceleration);
             transform.forward = rb.velocity;
+            //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rb.velocity), Mathf.Min(5f * Time.deltaTime, 1));
         }
     }
 }

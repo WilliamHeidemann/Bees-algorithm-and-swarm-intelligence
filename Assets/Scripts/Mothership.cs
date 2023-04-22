@@ -39,7 +39,6 @@ public class Mothership : MonoBehaviour
 
     void Update()
     {
-        return;
         if (ShouldRecruitAttackers()) RecruitAttackers();
         if (ShouldRecruitScouts()) RecruitScouts();
         if (ShouldRecruitForagers()) RecruitForagers();
