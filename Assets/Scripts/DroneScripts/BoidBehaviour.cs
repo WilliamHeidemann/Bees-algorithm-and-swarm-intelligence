@@ -28,7 +28,8 @@ namespace DroneScripts
 
         private void Update()
         {
-            return;
+            //return;
+            if (GetComponent<Drone>().droneBehaviour is not IdleBehaviour) return;
             CalculateBoidValues();
             ApplyBoidSteering();
         }
@@ -71,9 +72,8 @@ namespace DroneScripts
             _acceleration += alignmentForce;
             _acceleration += cohesionForce;
             _acceleration += separationForce;
-
+            print(_acceleration);
             rb.AddForce(_acceleration);
-            //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rb.velocity), Mathf.Min(5f * Time.deltaTime, 1));
         }
     }
 }

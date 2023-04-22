@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace DroneScripts
 {
@@ -24,13 +26,9 @@ namespace DroneScripts
         private void MoveTowardsTarget()
         {
             if (Vector3.Distance(drone.transform.position, target) < 1) return;
-            var directionForce = (target - drone.transform.position).normalized;
-            drone.rb.AddForce(directionForce * 20f);
-            drone.transform.forward = drone.rb.velocity;
-            // var targetRotation = Quaternion.LookRotation(target - drone.transform.position);
-            // var adjRotSpeed = Mathf.Min(RotationSpeed * Time.deltaTime, 1);
-            // drone.transform.rotation = Quaternion.Lerp(drone.transform.rotation, targetRotation, adjRotSpeed);
-            // drone.rb.AddRelativeForce(Vector3.forward * (Speed * Time.deltaTime));
+            var directionForce = (target - drone.transform.position).normalized * 20f;
+            //Console.WriteLine(directionForce);
+            drone.rb.AddForce(directionForce);
             Debug.DrawLine(drone.transform.position, target, lineColor);
         }
 

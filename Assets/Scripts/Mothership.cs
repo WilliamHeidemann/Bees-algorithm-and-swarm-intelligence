@@ -39,6 +39,7 @@ public class Mothership : MonoBehaviour
 
     void Update()
     {
+        //return;
         if (ShouldRecruitAttackers()) RecruitAttackers();
         if (ShouldRecruitScouts()) RecruitScouts();
         if (ShouldRecruitEliteForagers()) RecruitEliteForagers();
@@ -58,7 +59,7 @@ public class Mothership : MonoBehaviour
         }
     }
     
-    private bool ShouldRecruitScouts() => (scouts.Count < maxScouts || resourceObjects.Count == 0) && idle.Count > 0;
+    private bool ShouldRecruitScouts() => (scouts.Count < maxScouts || resourceObjects.Count == 0) && idle.Count > 0; //
 
     private void RecruitScouts()
     {
