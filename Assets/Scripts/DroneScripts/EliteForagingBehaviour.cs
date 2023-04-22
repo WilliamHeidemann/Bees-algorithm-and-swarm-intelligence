@@ -13,7 +13,7 @@ namespace DroneScripts
         {
             if (TargetReached())
             {
-                motherShip.InitiateEliteScouting(drone);
+                motherShip.InitiateEliteScouting(drone, _resourceToCollect);
             }
             base.Execute();
         }

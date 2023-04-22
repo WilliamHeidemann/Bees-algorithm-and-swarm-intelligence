@@ -4,7 +4,7 @@ namespace DroneScripts
 {
     public class ForagingBehaviour : DroneBehaviour
     {
-        private Asteroid _resourceToCollect;
+        public Asteroid _resourceToCollect;
         private bool _isResourcePickedUp;
         
         public ForagingBehaviour(Drone drone) : base(drone)

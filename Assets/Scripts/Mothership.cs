@@ -22,7 +22,7 @@ public class Mothership : MonoBehaviour
     private int maxForagers = 5;
     private int maxEliteForagers = 5;
     public List<Asteroid> resourceObjects = new();
-    
+    private Dictionary<Asteroid, int> neighborhoodFitness = new();
     void Start()
     {
         for (int i = 0; i < numberOfEnemies; i++) 
@@ -41,8 +41,8 @@ public class Mothership : MonoBehaviour
     {
         if (ShouldRecruitAttackers()) RecruitAttackers();
         if (ShouldRecruitScouts()) RecruitScouts();
-        if (ShouldRecruitForagers()) RecruitForagers();
         if (ShouldRecruitEliteForagers()) RecruitEliteForagers();
+        if (ShouldRecruitForagers()) RecruitForagers();
     }
 
     private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
@@ -70,17 +70,6 @@ public class Mothership : MonoBehaviour
         }
     }
     
-    private bool ShouldRecruitForagers() => foragers.Count < maxForagers && idle.Count > 0 && resourceObjects.Count > 0;
-    private void RecruitForagers()
-    {
-        while (ShouldRecruitForagers())
-        {
-            Assign(idle, foragers);
-            var forager = foragers[^1];
-            forager.droneBehaviour = new ForagingBehaviour(forager);
-        }
-    }
-    
     private bool ShouldRecruitEliteForagers() => eliteForagers.Count < maxEliteForagers && idle.Count > 0 && resourceObjects.Count > 0;
     private void RecruitEliteForagers()
     {
@@ -89,6 +78,17 @@ public class Mothership : MonoBehaviour
             Assign(idle, eliteForagers);
             var eliteForager = eliteForagers[^1];
             eliteForager.droneBehaviour = new EliteForagingBehaviour(eliteForager);
+        }
+    }
+    
+    private bool ShouldRecruitForagers() => foragers.Count < maxForagers && idle.Count > 0 && resourceObjects.Count > 0;
+    private void RecruitForagers()
+    {
+        while (ShouldRecruitForagers())
+        {
+            Assign(idle, foragers);
+            var forager = foragers[^1];
+            forager.droneBehaviour = new ForagingBehaviour(forager);
         }
     }
 
@@ -109,6 +109,7 @@ public class Mothership : MonoBehaviour
     {
         resourceObjects.Add(asteroid);
         resourceObjects.Sort((a, b) => b.resource.CompareTo(a.resource));
+        neighborhoodFitness.TryAdd(asteroid, 10);
         Swap(scout, scouts, idle);
         scout.droneBehaviour = new IdleBehaviour(scout);
     }
@@ -120,22 +121,34 @@ public class Mothership : MonoBehaviour
         forager.droneBehaviour = new IdleBehaviour(forager);
     }
 
-    public void InitiateEliteScouting(Drone eliteForager)
+    public void InitiateEliteScouting(Drone eliteForager, Asteroid asteroidToSearchAround)
     {
-        Swap(eliteForager, eliteForagers, scouts);
-        eliteForager.droneBehaviour = new ScoutingBehaviour(eliteForager);
-        StartCoroutine(EliteSearch(eliteForager));
+        if (neighborhoodFitness[asteroidToSearchAround] > 0)
+        {
+            Swap(eliteForager, eliteForagers, scouts);
+            eliteForager.droneBehaviour = new ScoutingBehaviour(eliteForager);
+            StartCoroutine(EliteSearch(eliteForager, asteroidToSearchAround));
+        }
+        else
+        {
+            Swap(eliteForager, eliteForagers, foragers);
+            var foragingBehaviour = new ScoutingBehaviour(eliteForager)
+            {
+                newResourceObject = asteroidToSearchAround
+            };
+            eliteForager.droneBehaviour = foragingBehaviour;
+        }
     }
 
-    private IEnumerator EliteSearch(Drone scoutingEliteForager)
+    private IEnumerator EliteSearch(Drone scoutingEliteForager, Asteroid asteroidToSearchAround)
     {
-        yield return new WaitForSeconds(5);
-        var scoutBehaviour = (ScoutingBehaviour)scoutingEliteForager.droneBehaviour;
-        if (!scoutBehaviour.newResourceObject)
-        {
-            Swap(scoutingEliteForager, eliteForagers, foragers);
-            scoutingEliteForager.droneBehaviour = new ForagingBehaviour(scoutingEliteForager);
-        }
+        var timeToSearchArea = neighborhoodFitness[asteroidToSearchAround];
+        yield return new WaitForSeconds(timeToSearchArea);
+        if (scoutingEliteForager.droneBehaviour is not ScoutingBehaviour scoutBehaviour) yield break; // Scout returned home
+        if (scoutBehaviour.newResourceObject) yield break; // Found a new asteroid
+        neighborhoodFitness[asteroidToSearchAround] -= 1; // Neighborhood shrinking
+        Swap(scoutingEliteForager, scouts, foragers);
+        scoutingEliteForager.droneBehaviour = new ForagingBehaviour(scoutingEliteForager);
     }
 }
 

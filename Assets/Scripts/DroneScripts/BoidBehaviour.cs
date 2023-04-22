@@ -28,6 +28,7 @@ namespace DroneScripts
 
         private void Update()
         {
+            return;
             CalculateBoidValues();
             ApplyBoidSteering();
         }
@@ -72,7 +73,6 @@ namespace DroneScripts
             _acceleration += separationForce;
 
             rb.AddForce(_acceleration);
-            transform.forward = rb.velocity;
             //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(rb.velocity), Mathf.Min(5f * Time.deltaTime, 1));
         }
     }

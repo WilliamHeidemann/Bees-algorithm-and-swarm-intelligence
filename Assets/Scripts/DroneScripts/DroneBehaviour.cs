@@ -26,6 +26,7 @@ namespace DroneScripts
             if (Vector3.Distance(drone.transform.position, target) < 1) return;
             var directionForce = (target - drone.transform.position).normalized;
             drone.rb.AddForce(directionForce * 20f);
+            drone.transform.forward = drone.rb.velocity;
             // var targetRotation = Quaternion.LookRotation(target - drone.transform.position);
             // var adjRotSpeed = Mathf.Min(RotationSpeed * Time.deltaTime, 1);
             // drone.transform.rotation = Quaternion.Lerp(drone.transform.rotation, targetRotation, adjRotSpeed);
