@@ -8,8 +8,8 @@ namespace DroneScripts
     public class ScoutingBehaviour : DroneBehaviour
     {
         public Asteroid newResourceObject;
-        private readonly Collider[] _colliders = new Collider[5];
-        private static LayerMask asteroidLayerMask = 1 << LayerMask.NameToLayer("Asteroid");
+        private readonly Collider[] _colliders = new Collider[4];
+        private static readonly int AsteroidLayerMask = 1 << LayerMask.NameToLayer("Asteroid");
         
         public ScoutingBehaviour(Drone drone) : base(drone)
         {
@@ -70,8 +70,7 @@ namespace DroneScripts
 
         private bool DetectNewResources(out Asteroid asteroid)
         {
-            //var nearby = Physics.OverlapSphere(drone.transform.position, detectionRadius);
-            var hits = Physics.OverlapSphereNonAlloc(drone.transform.position, detectionRadius, _colliders, asteroidLayerMask);
+            var hits = Physics.OverlapSphereNonAlloc(drone.transform.position, detectionRadius, _colliders, AsteroidLayerMask);
             asteroid = null;
             if (hits == 0) return false;
             var unknownAsteroids = _colliders // nearby.
