@@ -70,7 +70,7 @@ namespace DroneScripts
 
         private bool DetectNewResources(out Asteroid asteroid)
         {
-            var hits = Physics.OverlapSphereNonAlloc(drone.transform.position, detectionRadius, _colliders, AsteroidLayerMask);
+            var hits = Physics.OverlapSphereNonAlloc(drone.transform.position, DetectionRadius, _colliders, AsteroidLayerMask);
             asteroid = null;
             if (hits == 0) return false;
             var unknownAsteroids = _colliders // nearby.

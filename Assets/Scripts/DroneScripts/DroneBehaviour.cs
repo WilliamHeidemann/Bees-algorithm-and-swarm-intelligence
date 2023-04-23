@@ -10,8 +10,8 @@ namespace DroneScripts
         protected Vector3 target;
         protected Mothership motherShip;
         protected Color lineColor;
-        protected readonly float detectionRadius = 200.0f;
-        
+        protected const float DetectionRadius = 200.0f;
+
         protected DroneBehaviour(Drone drone)
         {
             this.drone = drone;
@@ -21,6 +21,16 @@ namespace DroneScripts
         public virtual void Execute()
         {
             MoveTowardsTarget();
+            ManageFuel();
+        }
+
+        protected virtual void ManageFuel()
+        {
+            drone.fuel -= Time.deltaTime;
+            if (drone.fuel < 10f)
+            {
+                motherShip.ReturnToRefuel(drone);
+            }
         }
 
         private void MoveTowardsTarget()
@@ -31,6 +41,6 @@ namespace DroneScripts
             Debug.DrawLine(drone.transform.position, target, lineColor);
         }
 
-        protected bool TargetReached() => Vector3.Distance(drone.transform.position, target) < detectionRadius;
+        protected bool TargetReached() => Vector3.Distance(drone.transform.position, target) < DetectionRadius;
     }
 }

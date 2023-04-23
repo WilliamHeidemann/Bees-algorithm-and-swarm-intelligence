@@ -17,6 +17,11 @@ namespace DroneScripts
             base.Execute();
         }
 
+        protected override void ManageFuel()
+        {
+            drone.fuel += Time.deltaTime;
+        }
+
         private Vector3 IdleDronesTarget()
         {
             var angle = Time.time * 0.14f + 10;
@@ -24,7 +29,6 @@ namespace DroneScripts
             var z = Mathf.Cos(angle);
             var forward = new Vector3(x, 0, z);
             var idleTarget = _motherShipPosition + forward * 300f;
-            //Debug.DrawLine(_motherShipPosition, idleTarget);
             return idleTarget;
         }
     }

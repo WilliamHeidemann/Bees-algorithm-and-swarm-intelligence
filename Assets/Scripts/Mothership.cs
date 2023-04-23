@@ -178,5 +178,14 @@ public class Mothership : MonoBehaviour
             _resourceToCollect = asteroidToSearchAround
         };
     }
+
+    public void ReturnToRefuel(Drone drone)
+    {
+        drone.droneBehaviour = new IdleBehaviour(drone);
+        if (attackers.Contains(drone)) Swap(drone, attackers, idle);
+        else if (scouts.Contains(drone)) Swap(drone, scouts, idle);
+        else if (eliteForagers.Contains(drone)) Swap(drone, eliteForagers, idle);
+        else if (foragers.Contains(drone)) Swap(drone, foragers, idle);
+    }
 }
 
