@@ -27,7 +27,6 @@ namespace DroneScripts
         {
             if (Vector3.Distance(drone.transform.position, target) < 1) return;
             var directionForce = (target - drone.transform.position).normalized * 20f;
-            //Console.WriteLine(directionForce);
             drone.rb.AddForce(directionForce);
             Debug.DrawLine(drone.transform.position, target, lineColor);
         }

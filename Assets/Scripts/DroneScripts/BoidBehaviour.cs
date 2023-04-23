@@ -28,8 +28,6 @@ namespace DroneScripts
 
         private void Update()
         {
-            //return;
-            if (GetComponent<Drone>().droneBehaviour is not IdleBehaviour) return;
             CalculateBoidValues();
             ApplyBoidSteering();
         }
@@ -72,8 +70,7 @@ namespace DroneScripts
             _acceleration += alignmentForce;
             _acceleration += cohesionForce;
             _acceleration += separationForce;
-            print(_acceleration);
-            rb.AddForce(_acceleration);
+            rb.AddForce(_acceleration.normalized * 15f);
         }
     }
 }
