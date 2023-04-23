@@ -8,7 +8,7 @@
 
         public override void Execute()
         {
-            target = drone.gameManager.playerDreadnaught.transform.position;
+            target = drone.gameManager.playerDreadnaught.position;
             base.Execute();
         }
     }

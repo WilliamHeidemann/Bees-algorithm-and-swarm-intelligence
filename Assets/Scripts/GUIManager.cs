@@ -28,8 +28,9 @@ public class GUIManager : MonoBehaviour {
 
         if (gameManager.gameStarted) {
             //Find player Dreadnaught
-            if (!playerDreadnaught) {
-                playerDreadnaught = GameObject.FindGameObjectWithTag("Player").GetComponent<Dreadnaught>();
+            if (!playerDreadnaught)
+            {
+	            playerDreadnaught = FindObjectOfType<Dreadnaught>();
                 missionText.SetActive(false);
             }
             //Update GUI elements

@@ -2163,7 +2163,7 @@ MonoBehaviour:
   mouseSensitivity: 5
   yInvert: 0
   mainCamera: {fileID: 1849491730}
-  playerDreadnaught: {fileID: 517351400}
+  playerDreadnaught: {fileID: 517351404}
   alienMothership: {fileID: 1069572142}
   enemyList: []
   gameStarted: 0

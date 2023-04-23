@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour {
     private Camera _cam;
     private int normalFov = 60;
 
-    public GameObject playerDreadnaught;
+    public Transform playerDreadnaught;
     public Mothership alienMothership;
 
 	public GameObject[] enemyList;
@@ -51,8 +51,8 @@ public class GameManager : MonoBehaviour {
 		//Check to see if Game Started
         if(Input.GetKeyDown("space") && gameStarted == false) {
             gameStarted = true;
-            playerDreadnaught.SetActive(true);
-            mainCamera.transform.position = playerDreadnaught.transform.position;
+            playerDreadnaught.gameObject.SetActive(true);
+            mainCamera.transform.position = playerDreadnaught.position;
             mainCamera.GetComponent<ThirdPersonCamera>().enabled = true;
             mainCamera.GetComponent<Orbit>().enabled = false;
             mainCamera.GetComponent<Camera>().fieldOfView = 179;
