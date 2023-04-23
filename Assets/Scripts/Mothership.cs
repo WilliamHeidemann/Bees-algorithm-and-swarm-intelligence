@@ -85,8 +85,24 @@ public class Mothership : MonoBehaviour
         {
             Assign(idle, eliteForagers);
             var eliteForager = eliteForagers[^1];
-            eliteForager.droneBehaviour = new EliteForagingBehaviour(eliteForager);
+            var eliteBehaviour = new EliteForagingBehaviour(eliteForager)
+            {
+                _resourceToCollect = ResourceToSearch()
+            };
+            eliteForager.droneBehaviour = eliteBehaviour;
         }
+    }
+
+    private Asteroid ResourceToSearch()
+    {
+        var roll = Random.value;
+        var limit = 0.50f;
+        foreach (var resource in resourceObjects)
+        {
+            if (roll > limit) return resource;
+            limit -= 20f;
+        }
+        return resourceObjects[^1];
     }
     
     private bool ShouldRecruitForagers() => foragers.Count < _maxForagers && idle.Count > 0 && resourceObjects.Count > 0;
@@ -96,7 +112,8 @@ public class Mothership : MonoBehaviour
         {
             Assign(idle, foragers);
             var forager = foragers[^1];
-            forager.droneBehaviour = new ForagingBehaviour(forager);
+            var foragingBehaviour = new ForagingBehaviour(forager);
+            forager.droneBehaviour = foragingBehaviour;
         }
     }
 
@@ -151,12 +168,15 @@ public class Mothership : MonoBehaviour
     private IEnumerator EliteSearch(Drone scoutingEliteForager, Asteroid asteroidToSearchAround)
     {
         var timeToSearchArea = _neighborhoodFitness[asteroidToSearchAround];
-        yield return new WaitForSeconds(timeToSearchArea);
+        yield return new WaitForSeconds(timeToSearchArea); // Any state change might occur at this point
         if (scoutingEliteForager.droneBehaviour is not ScoutingBehaviour scoutBehaviour) yield break; // Scout returned home
         if (scoutBehaviour.newResourceObject) yield break; // Found a new asteroid
         _neighborhoodFitness[asteroidToSearchAround] -= 1; // Neighborhood shrinking
         Swap(scoutingEliteForager, scouts, foragers);
-        scoutingEliteForager.droneBehaviour = new ForagingBehaviour(scoutingEliteForager);
+        scoutingEliteForager.droneBehaviour = new ForagingBehaviour(scoutingEliteForager)
+        {
+            _resourceToCollect = asteroidToSearchAround
+        };
     }
 }
 

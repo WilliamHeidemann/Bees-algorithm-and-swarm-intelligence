@@ -17,7 +17,6 @@ namespace DroneScripts
         private Vector3 _flockDirection;
         private Vector3 _flockCentre;
         private Vector3 _separationDirection;
-        private int _boidsInCohesionRange;
 
         private Vector3 _acceleration;
         private void Start()
@@ -37,7 +36,7 @@ namespace DroneScripts
             _flockDirection = Vector3.zero;
             _flockCentre = Vector3.zero;
             _separationDirection = Vector3.zero;
-            _boidsInCohesionRange = 0;
+            var boidsInCohesionRange = 0;
 
             var boids = gameManager.enemyList;
             foreach (var boid in boids)
@@ -47,7 +46,7 @@ namespace DroneScripts
                 if (distance == 0) continue;
                 if (distance < cohesionDistance)
                 {
-                    _boidsInCohesionRange += 1;
+                    boidsInCohesionRange += 1;
                     _flockDirection += boid.transform.forward;
                     _flockCentre += boid.transform.position;
                     if (distance < separationDistance)
@@ -56,7 +55,7 @@ namespace DroneScripts
                     }
                 }
             }
-            if (_boidsInCohesionRange > 0) _flockCentre /= _boidsInCohesionRange;
+            if (boidsInCohesionRange > 0) _flockCentre /= boidsInCohesionRange;
         }
         
         private void ApplyBoidSteering()

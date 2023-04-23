@@ -2225,7 +2225,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 666880473}
-  - component: {fileID: 666880474}
   m_Layer: 0
   m_Name: Asteroids 2
   m_TagString: Untagged
@@ -2252,19 +2251,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &666880474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 666880472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd66e7913a4813d429a0e4107a894835, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotation: {x: 0, y: 0, z: 0}
 --- !u!1001 &683564673
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3508,7 +3494,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1016830185}
-  - component: {fileID: 1016830186}
   m_Layer: 0
   m_Name: Asteroids 3
   m_TagString: Untagged
@@ -3533,19 +3518,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1016830186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1016830184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd66e7913a4813d429a0e4107a894835, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &1027593425
 GameObject:
   m_ObjectHideFlags: 0
@@ -3814,7 +3786,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 114758207600209994, guid: 028b7d853a7752f43bbadf1faec4a8cd, type: 3}
-  numberOfEnemies: 200
+  numberOfEnemies: 1000
   spawnLocation: {fileID: 435373163}
   idle: []
   attackers: []
@@ -3876,7 +3848,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1138699215}
-  - component: {fileID: 1138699216}
   m_Layer: 0
   m_Name: Asteroids 1
   m_TagString: Untagged
@@ -3903,19 +3874,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1138699216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1138699214}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd66e7913a4813d429a0e4107a894835, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &1148423107
 GameObject:
   m_ObjectHideFlags: 0
@@ -7025,7 +6983,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2089543087}
-  - component: {fileID: 2089543088}
   m_Layer: 0
   m_Name: Asteroids 4
   m_TagString: Untagged
@@ -7051,19 +7008,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2089543088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2089543086}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd66e7913a4813d429a0e4107a894835, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotation: {x: 0, y: 0, z: 0}
 --- !u!1 &2113510934
 GameObject:
   m_ObjectHideFlags: 0
