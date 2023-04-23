@@ -56,12 +56,24 @@ public class Mothership : MonoBehaviour
     private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
     private void RecruitAttackers()
     {
-        while (idle.Count > 0) Assign(idle, attackers);
-        while (scouts.Count > 0) Assign(scouts, attackers);
-        while (foragers.Count > 0) Assign(foragers, attackers);
-        while (eliteForagers.Count > 0) Assign(eliteForagers, attackers);
-        foreach (var drone in attackers)
+        while (idle.Count > 5) // Allow some drones to refuel
         {
+            var drone = Assign(idle, attackers);
+            drone.droneBehaviour = new AttackBehaviour(drone);
+        }
+        while (scouts.Count > 0)
+        {
+            var drone = Assign(scouts, attackers);
+            drone.droneBehaviour = new AttackBehaviour(drone);
+        }
+        while (foragers.Count > 0)
+        {
+            var drone = Assign(foragers, attackers);
+            drone.droneBehaviour = new AttackBehaviour(drone);
+        }
+        while (eliteForagers.Count > 0)
+        {
+            var drone = Assign(eliteForagers, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
     }
@@ -72,8 +84,7 @@ public class Mothership : MonoBehaviour
     {
         while (ShouldRecruitScouts())
         {
-            Assign(idle, scouts);
-            var scout = scouts[^1];
+            var scout = Assign(idle, scouts);
             scout.droneBehaviour = new ScoutingBehaviour(scout);
         }
     }
@@ -83,11 +94,10 @@ public class Mothership : MonoBehaviour
     {
         while (ShouldRecruitEliteForagers())
         {
-            Assign(idle, eliteForagers);
-            var eliteForager = eliteForagers[^1];
+            var eliteForager = Assign(idle, eliteForagers);
             var eliteBehaviour = new EliteForagingBehaviour(eliteForager)
             {
-                _resourceToCollect = ResourceToSearch()
+                resourceToCollect = ResourceToSearch()
             };
             eliteForager.droneBehaviour = eliteBehaviour;
         }
@@ -110,18 +120,18 @@ public class Mothership : MonoBehaviour
     {
         while (ShouldRecruitForagers())
         {
-            Assign(idle, foragers);
-            var forager = foragers[^1];
+            var forager = Assign(idle, foragers);
             var foragingBehaviour = new ForagingBehaviour(forager);
             forager.droneBehaviour = foragingBehaviour;
         }
     }
 
-    private static void Assign(List<Drone> from, List<Drone> to)
+    private static Drone Assign(List<Drone> from, List<Drone> to)
     {
-        var drone = from[0];
+        var drone = from.OrderByDescending(drone => drone.fuel).FirstOrDefault();
         from.Remove(drone);
         to.Add(drone);
+        return drone;
     }
 
     private static void Swap(Drone drone, List<Drone> from, List<Drone> to)
@@ -175,7 +185,7 @@ public class Mothership : MonoBehaviour
         Swap(scoutingEliteForager, scouts, foragers);
         scoutingEliteForager.droneBehaviour = new ForagingBehaviour(scoutingEliteForager)
         {
-            _resourceToCollect = asteroidToSearchAround
+            resourceToCollect = asteroidToSearchAround
         };
     }
 

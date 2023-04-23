@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour {
 
     //Camera variables
     public GameObject mainCamera;
+    private Camera _cam;
     private int normalFov = 60;
 
     public GameObject playerDreadnaught;
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour {
 		Cursor.visible = true; 
 		alienMothership = FindObjectOfType<Mothership>();
 		enemyList = GameObject.FindGameObjectsWithTag ("Enemy");
+		_cam = Camera.main;
 	}
 	
 	// Update is called once per frame
@@ -57,8 +59,8 @@ public class GameManager : MonoBehaviour {
         }
 
         //FOV warping effect
-        if (mainCamera.GetComponent<Camera>().fieldOfView >= normalFov)
-            mainCamera.GetComponent<Camera>().fieldOfView -= Time.deltaTime * 100;
+        if (_cam.fieldOfView >= normalFov)
+            _cam.fieldOfView -= Time.deltaTime * 100;
 
         //Game Over conditions met
         if (enemyList.Length == 0 && !alienMothership)
