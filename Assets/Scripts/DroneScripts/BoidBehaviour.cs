@@ -14,9 +14,9 @@ namespace DroneScripts
         public float separationStrength = 250.0f;
         public float cohesionStrength = 25.0f;
 
-        private Vector3 _flockDirection;
-        private Vector3 _flockCentre;
-        private Vector3 _separationDirection;
+        public Vector3 flockDirection;
+        public Vector3 flockCentre;
+        public Vector3 separationDirection;
 
         private Vector3 _acceleration;
         private void Start()
@@ -27,15 +27,15 @@ namespace DroneScripts
 
         private void Update()
         {
-            CalculateBoidValues();
+            //CalculateBoidValues();
             ApplyBoidSteering();
         }
         
         private void CalculateBoidValues()
         {
-            _flockDirection = Vector3.zero;
-            _flockCentre = Vector3.zero;
-            _separationDirection = Vector3.zero;
+            flockDirection = Vector3.zero;
+            flockCentre = Vector3.zero;
+            separationDirection = Vector3.zero;
             var boidsInCohesionRange = 0;
 
             var boids = gameManager.enemyList;
@@ -47,24 +47,24 @@ namespace DroneScripts
                 if (distance < cohesionDistance)
                 {
                     boidsInCohesionRange += 1;
-                    _flockDirection += boid.transform.forward;
-                    _flockCentre += boid.transform.position;
+                    flockDirection += boid.transform.forward;
+                    flockCentre += boid.transform.position;
                     if (distance < separationDistance)
                     {
-                        _separationDirection -= offset / distance;
+                        separationDirection -= offset / distance;
                     }
                 }
             }
-            if (boidsInCohesionRange > 0) _flockCentre /= boidsInCohesionRange;
+            if (boidsInCohesionRange > 0) flockCentre /= boidsInCohesionRange;
         }
         
         private void ApplyBoidSteering()
         {
             _acceleration = Vector3.zero;
             
-            var alignmentForce = _flockDirection;
-            var cohesionForce = (_flockCentre - transform.position) * cohesionStrength;
-            var separationForce = _separationDirection * separationStrength;
+            var alignmentForce = flockDirection;
+            var cohesionForce = (flockCentre - transform.position) * cohesionStrength;
+            var separationForce = separationDirection * separationStrength;
 
             _acceleration += alignmentForce;
             _acceleration += cohesionForce;

@@ -10,7 +10,7 @@ public class Mothership : MonoBehaviour
 {
     public Drone enemy;
     public int numberOfEnemies = 20;
-
+    
     public GameObject spawnLocation;
 
     [SerializeField] private List<Drone> idle = new();
