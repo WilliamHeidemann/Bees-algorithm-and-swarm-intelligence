@@ -6,7 +6,6 @@ namespace DroneScripts
     public class BoidBehaviour : MonoBehaviour
     {
         private Rigidbody rb;
-        private GameManager gameManager;
         
         //Boid Steering/Flocking Variables
         public float separationStrength = 250.0f;
@@ -19,7 +18,6 @@ namespace DroneScripts
         private Vector3 _acceleration;
         private void Start()
         {
-            gameManager = FindObjectOfType<GameManager>();
             rb = GetComponent<Rigidbody>();
         }
 

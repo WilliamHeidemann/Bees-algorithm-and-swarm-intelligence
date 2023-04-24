@@ -11,8 +11,6 @@ using UnityEngine.Jobs;
 
 public class BoidJobScheduler : MonoBehaviour
 {
-    public float separationDistance = 25.0f;
-    public float cohesionDistance = 50.0f;
     private BoidBehaviour[] _boidBehaviours;
     private Transform[] _boidTransforms;
     
