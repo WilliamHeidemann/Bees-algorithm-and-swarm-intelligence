@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DroneScripts;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
@@ -58,6 +59,7 @@ public struct BoidValues
     public Vector3 separationDirection;
 }
 
+[BurstCompile]
 public struct CalculateBoidValueJob : IJobParallelFor
 {
     [ReadOnly] public NativeArray<Vector3> boidPositions;
