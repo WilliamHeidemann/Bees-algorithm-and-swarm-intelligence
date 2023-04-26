@@ -4,7 +4,7 @@ namespace DroneScripts
 {
     public class ForagingBehaviour : DroneBehaviour
     {
-        public Asteroid resourceToCollect;
+        protected Asteroid resourceToCollect;
         private bool _isResourcePickedUp;
         
         public ForagingBehaviour(Drone drone) : base(drone)
@@ -34,6 +34,12 @@ namespace DroneScripts
                     motherShip.CollectResource(resourceToCollect, drone);
                 }
             }
+        }
+
+        public void SetResourceTarget(Asteroid asteroid)
+        {
+            resourceToCollect = asteroid;
+            target = asteroid.transform.position;
         }
     }
 }

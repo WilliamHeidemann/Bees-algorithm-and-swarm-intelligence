@@ -10,6 +10,9 @@ public class Asteroid : MonoBehaviour
 
     private void Start()
     {
-        resource = Random.Range(10, 100);
+        var position = transform.position;
+        var x = position.x / 1000;
+        var z = position.z / 1000;
+        resource = (int)(Mathf.PerlinNoise(x, z) * 100);
     }
 }

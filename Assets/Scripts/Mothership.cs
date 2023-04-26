@@ -95,10 +95,8 @@ public class Mothership : MonoBehaviour
         while (ShouldRecruitEliteForagers())
         {
             var eliteForager = Assign(idle, eliteForagers);
-            var eliteBehaviour = new EliteForagingBehaviour(eliteForager)
-            {
-                resourceToCollect = ResourceToSearch()
-            };
+            var eliteBehaviour = new EliteForagingBehaviour(eliteForager);
+            eliteBehaviour.SetResourceTarget(ResourceToSearch());
             eliteForager.droneBehaviour = eliteBehaviour;
         }
     }
@@ -122,6 +120,7 @@ public class Mothership : MonoBehaviour
         {
             var forager = Assign(idle, foragers);
             var foragingBehaviour = new ForagingBehaviour(forager);
+            foragingBehaviour.SetResourceTarget(resourceObjects[0]);
             forager.droneBehaviour = foragingBehaviour;
         }
     }
@@ -183,10 +182,8 @@ public class Mothership : MonoBehaviour
         if (scoutBehaviour.newResourceObject) yield break; // Found a new asteroid
         _neighborhoodFitness[asteroidToSearchAround] -= 1; // Neighborhood shrinking
         Swap(scoutingEliteForager, scouts, foragers);
-        scoutingEliteForager.droneBehaviour = new ForagingBehaviour(scoutingEliteForager)
-        {
-            resourceToCollect = asteroidToSearchAround
-        };
+        var foragingBehaviour = new ForagingBehaviour(scoutingEliteForager);
+        foragingBehaviour.SetResourceTarget(asteroidToSearchAround);
     }
 
     public void ReturnToRefuel(Drone drone)
