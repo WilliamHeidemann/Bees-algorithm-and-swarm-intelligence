@@ -25,6 +25,8 @@ public class Mothership : MonoBehaviour
     private readonly Dictionary<Asteroid, int> _neighborhoodFitness = new();
     void Start()
     {
+        Time.timeScale = 5;
+        
         const float scoutPercentage = 0.25f;
         const float foragerPercentage = 0.25f;
         const float eliteForagerPercentage = 0.25f;
@@ -53,53 +55,66 @@ public class Mothership : MonoBehaviour
         if (ShouldRecruitForagers()) RecruitForagers();
     }
 
+    private IEnumerable<Drone> RefueledIdleDrones => idle.Where(drone => drone.fuel > 100);
+
     private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
     private void RecruitAttackers()
     {
-        while (idle.Count > 5) // Allow some drones to refuel
+        while (RefueledIdleDrones.Any()) // Allow some drones to refuel
         {
-            var drone = Assign(idle, attackers);
+            var drone = idle[0];
+            Swap(drone, idle, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
         while (scouts.Count > 0)
         {
-            var drone = Assign(scouts, attackers);
+            var drone = scouts[0];
+            Swap(drone, scouts, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
         while (foragers.Count > 0)
         {
-            var drone = Assign(foragers, attackers);
+            var drone = foragers[0];
+            Swap(drone, foragers, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
         while (eliteForagers.Count > 0)
         {
-            var drone = Assign(eliteForagers, attackers);
+            var drone = eliteForagers[0];
+            Swap(drone, eliteForagers, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
     }
     
-    private bool ShouldRecruitScouts() => (scouts.Count < _maxScouts) && idle.Count > 0; // || resourceObjects.Count == 0
-
+    private bool ShouldRecruitScouts() => scouts.Count < _maxScouts && idle.Count > 0 && RefueledIdleDrones.Any();
+    
     private void RecruitScouts()
     {
         while (ShouldRecruitScouts())
         {
-            var scout = Assign(idle, scouts);
+            var scout = BestFitScout();
+            Swap(scout, idle, scouts);
             scout.droneBehaviour = new ScoutingBehaviour(scout);
         }
     }
-    
-    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < _maxEliteForagers && idle.Count > 0 && resourceObjects.Count > 0;
+
+    private Drone BestFitScout() => RefueledIdleDrones.OrderBy(drone => drone.capacity).ThenByDescending(drone => drone.fuel).First();
+
+    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < _maxEliteForagers && RefueledIdleDrones.Any() && resourceObjects.Count > 0;
     private void RecruitEliteForagers()
     {
         while (ShouldRecruitEliteForagers())
         {
-            var eliteForager = Assign(idle, eliteForagers);
+            var eliteForager = BestFitEliteForager();
+            Swap(eliteForager, idle, eliteForagers);
             var eliteBehaviour = new EliteForagingBehaviour(eliteForager);
             eliteBehaviour.SetResourceTarget(ResourceToSearch());
             eliteForager.droneBehaviour = eliteBehaviour;
         }
     }
+
+    private Drone BestFitEliteForager() =>
+        RefueledIdleDrones.OrderByDescending(drone => drone.fuel).ThenByDescending(drone => drone.capacity).First();
 
     private Asteroid ResourceToSearch()
     {
@@ -113,25 +128,21 @@ public class Mothership : MonoBehaviour
         return resourceObjects[^1];
     }
     
-    private bool ShouldRecruitForagers() => foragers.Count < _maxForagers && idle.Count > 0 && resourceObjects.Count > 0;
+    private bool ShouldRecruitForagers() => foragers.Count < _maxForagers && RefueledIdleDrones.Any() && resourceObjects.Count > 0;
     private void RecruitForagers()
     {
         while (ShouldRecruitForagers())
         {
-            var forager = Assign(idle, foragers);
+            var forager = BestFitForager(); 
+            Swap(forager, idle, foragers);
             var foragingBehaviour = new ForagingBehaviour(forager);
             foragingBehaviour.SetResourceTarget(resourceObjects[0]);
             forager.droneBehaviour = foragingBehaviour;
         }
     }
 
-    private static Drone Assign(List<Drone> from, List<Drone> to)
-    {
-        var drone = from.OrderByDescending(drone => drone.fuel).FirstOrDefault();
-        from.Remove(drone);
-        to.Add(drone);
-        return drone;
-    }
+    private Drone BestFitForager() =>
+        RefueledIdleDrones.OrderByDescending(drone => drone.capacity).ThenByDescending(drone => drone.fuel).First();
 
     private static void Swap(Drone drone, List<Drone> from, List<Drone> to)
     {

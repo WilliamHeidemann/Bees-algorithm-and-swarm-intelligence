@@ -19,12 +19,12 @@ namespace DroneScripts
 
         protected override void ManageFuel()
         {
-            drone.fuel += Time.deltaTime;
+            drone.fuel += Time.deltaTime * 5;
         }
 
         private Vector3 IdleDronesTarget()
         {
-            var angle = Time.time * 0.14f + 10;
+            var angle = Time.time * 0.13f + 10;
             var x = Mathf.Sin(angle);
             var z = Mathf.Cos(angle);
             var forward = new Vector3(x, 0, z);

@@ -12,11 +12,13 @@ public class Drone : Enemy
     public Rigidbody rb;
     public DroneBehaviour droneBehaviour;
     public float fuel = 100f;
+    public int capacity;
 
     void Start() 
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
         rb = GetComponent<Rigidbody>();
+        capacity = Random.Range(1, 5);
     }
 
     void Update()

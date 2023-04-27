@@ -3830,7 +3830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 114758207600209994, guid: 028b7d853a7752f43bbadf1faec4a8cd, type: 3}
-  numberOfEnemies: 500
+  numberOfEnemies: 100
   spawnLocation: {fileID: 435373163}
   idle: []
   attackers: []
