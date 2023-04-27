@@ -25,8 +25,6 @@ public class Mothership : MonoBehaviour
     private readonly Dictionary<Asteroid, int> _neighborhoodFitness = new();
     void Start()
     {
-        Time.timeScale = 5;
-        
         const float scoutPercentage = 0.25f;
         const float foragerPercentage = 0.25f;
         const float eliteForagerPercentage = 0.25f;

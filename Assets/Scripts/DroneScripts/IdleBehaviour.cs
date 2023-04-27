@@ -28,7 +28,7 @@ namespace DroneScripts
             var x = Mathf.Sin(angle);
             var z = Mathf.Cos(angle);
             var forward = new Vector3(x, 0, z);
-            var idleTarget = _motherShipPosition + forward * 300f;
+            var idleTarget = _motherShipPosition + forward * 300f + Vector3.up * 100;
             return idleTarget;
         }
     }
