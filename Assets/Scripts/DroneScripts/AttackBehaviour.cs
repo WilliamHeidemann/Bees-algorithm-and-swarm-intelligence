@@ -18,6 +18,10 @@ namespace DroneScripts
         {
             AttackPosition();
             base.Execute();
+            if (drone.health < 10)
+            {
+                motherShip.Retreat(drone);
+            }
         }
 
         private void AttackPosition()

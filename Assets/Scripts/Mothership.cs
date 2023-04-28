@@ -58,9 +58,9 @@ public class Mothership : MonoBehaviour
     private bool ShouldRecruitAttackers() => GameManager.Instance.gameStarted;
     private void RecruitAttackers()
     {
-        while (RefueledIdleDrones.Any()) // Allow some drones to refuel
+        while (RefueledIdleDrones.Any(drone => drone.health >= 90)) // Allow some drones to refuel
         {
-            var drone = idle[0];
+            var drone = RefueledIdleDrones.First(drone => drone.health >= 90);
             Swap(drone, idle, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
@@ -195,7 +195,7 @@ public class Mothership : MonoBehaviour
         foragingBehaviour.SetResourceTarget(asteroidToSearchAround);
     }
 
-    public void ReturnToRefuel(Drone drone)
+    public void Retreat(Drone drone)
     {
         drone.droneBehaviour = new IdleBehaviour(drone);
         if (attackers.Contains(drone)) Swap(drone, attackers, idle);

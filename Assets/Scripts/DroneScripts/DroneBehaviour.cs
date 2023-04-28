@@ -44,7 +44,7 @@ namespace DroneScripts
             drone.fuel -= Time.deltaTime;
             if (drone.fuel < 10f)
             {
-                motherShip.ReturnToRefuel(drone);
+                motherShip.Retreat(drone);
             }
         }
 

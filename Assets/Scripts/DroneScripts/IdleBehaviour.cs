@@ -19,7 +19,8 @@ namespace DroneScripts
 
         protected override void ManageFuel()
         {
-            drone.fuel += Time.deltaTime * 5;
+            drone.fuel = Mathf.Min(500, drone.fuel + Time.deltaTime * 5);
+            drone.health = Mathf.Min(100, drone.health + Time.deltaTime * 5);
         }
 
         private Vector3 IdleDronesTarget()
