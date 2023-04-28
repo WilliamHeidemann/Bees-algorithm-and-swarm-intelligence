@@ -1770,7 +1770,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c7b4aef3a2c7a846b9805ba9b37af8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosion: {fileID: 168250, guid: 5eb4293102a9d694ebf1affc13c4cff0, type: 3}
   missile: {fileID: 169402, guid: 34eba718966bed64d9dc3523d6163058, type: 3}
   missileAmount: 5
   missileMaxAmount: 10

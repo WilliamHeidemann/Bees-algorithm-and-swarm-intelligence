@@ -8,6 +8,7 @@ namespace DroneScripts
         private const float SeparationWeight = 100000;
         private float _laserTime;
         private const float LaserCooldown = 2f;
+        private bool HuntUtility => drone.health > 50;
 
         public AttackBehaviour(Drone drone) : base(drone)
         {
@@ -18,23 +19,35 @@ namespace DroneScripts
 
         public override void Execute()
         {
-            AttackPosition();
-            if (LaserReady() && TargetReached()) 
+            if (HuntUtility)
             {
-                drone.ShootPlayer();
-                _laserTime = Time.time + LaserCooldown;
+                SetHuntPosition();
+                if (LaserReady() && InAttackRange()) 
+                {
+                    drone.ShootPlayer();
+                    _laserTime = Time.time + LaserCooldown;
+                }
+            }
+            else
+            {
+                SetFleePosition();
+                if (InSafety())
+                {
+                    motherShip.Retreat(drone);
+                }
             }
             base.Execute();
-            if (drone.health < 50)
-            {
-                motherShip.Retreat(drone);
-            }
         }
 
+        private bool InAttackRange() => Vector3.Distance(drone.transform.position, _playerTransform.position) < 250f;
+
+        private bool InSafety() => Vector3.Distance(drone.transform.position, _playerTransform.position) > 500;
+
+        private void SetFleePosition() => target = drone.transform.position - _playerTransform.position;
 
         private bool LaserReady() => _laserTime < Time.time;
 
-        private void AttackPosition()
+        private void SetHuntPosition()
         {
             var playerPosition = _playerTransform.position;
             var droneTransform = drone.transform;
