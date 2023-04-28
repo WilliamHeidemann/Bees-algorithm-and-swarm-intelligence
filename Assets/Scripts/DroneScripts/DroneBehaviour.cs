@@ -21,16 +21,8 @@ namespace DroneScripts
         public virtual void Execute()
         {
             MoveTowardsTarget();
+            RotateTowardTarget();
             ManageFuel();
-        }
-
-        protected virtual void ManageFuel()
-        {
-            drone.fuel -= Time.deltaTime;
-            if (drone.fuel < 10f)
-            {
-                motherShip.ReturnToRefuel(drone);
-            }
         }
 
         private void MoveTowardsTarget()
@@ -39,6 +31,21 @@ namespace DroneScripts
             var directionForce = (target - drone.transform.position).normalized * 20f;
             drone.rb.AddForce(directionForce);
             Debug.DrawLine(drone.transform.position, target, lineColor);
+        }
+        
+        protected virtual void RotateTowardTarget()
+        {
+            drone.transform.forward = drone.rb.velocity;
+        }
+
+        
+        protected virtual void ManageFuel()
+        {
+            drone.fuel -= Time.deltaTime;
+            if (drone.fuel < 10f)
+            {
+                motherShip.ReturnToRefuel(drone);
+            }
         }
 
         protected bool TargetReached() => Vector3.Distance(drone.transform.position, target) < DetectionRadius;

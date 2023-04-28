@@ -24,6 +24,6 @@ public class Drone : Enemy
     void Update()
     {
         droneBehaviour.Execute();
-        transform.forward = rb.velocity;
+        //transform.forward = rb.velocity;
     }
 }

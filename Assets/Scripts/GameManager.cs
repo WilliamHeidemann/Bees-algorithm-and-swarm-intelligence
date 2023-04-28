@@ -37,7 +37,8 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		//Hide Cursor = false
-		Cursor.visible = true; 
+		Cursor.visible = true;
+		Cursor.lockState = CursorLockMode.Locked;
 		alienMothership = FindObjectOfType<Mothership>();
 		enemyList = GameObject.FindGameObjectsWithTag ("Enemy");
 		_cam = Camera.main;
