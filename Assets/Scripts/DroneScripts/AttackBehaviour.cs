@@ -22,15 +22,18 @@ namespace DroneScripts
 
         private void AttackPosition()
         {
-            var attackPosition = _playerTransform.position;// + (_playerTransform.forward * 2 + Vector3.up) * 100;
-            var distanceVector = drone.transform.position - _playerTransform.position;
+            var playerPosition = _playerTransform.position;
+            var droneTransform = drone.transform;
+            var distanceVector = droneTransform.position - playerPosition;
             var separationDirection = distanceVector.normalized;
-            target = attackPosition + (separationDirection / distanceVector.magnitude) * SeparationWeight;
+            var offset = _playerTransform.forward * 200;
+            target = playerPosition + separationDirection / distanceVector.magnitude * SeparationWeight + offset;
         }
 
         protected override void RotateTowardTarget()
         {
-            drone.transform.forward = _playerTransform.position - drone.transform.position;
+            var transform = drone.transform;
+            transform.forward = _playerTransform.position - transform.position;
         }
     }
 }

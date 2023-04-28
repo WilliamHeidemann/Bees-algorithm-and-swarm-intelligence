@@ -191,8 +191,9 @@ MonoBehaviour:
   deathEffect: {fileID: 168250, guid: 5eb4293102a9d694ebf1affc13c4cff0, type: 3}
   deathSound: {fileID: 103974, guid: 5682ac4627f4d5248bd4fdbc79756da8, type: 3}
   gameManager: {fileID: 0}
-  motherShip: {fileID: 0}
   rb: {fileID: 0}
+  fuel: 100
+  capacity: 0
 --- !u!114 &7842054084723565826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,10 +206,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5840826c1cce49d0b5162a3577f1f585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  separationDistance: 25
-  cohesionDistance: 50
   separationStrength: 50
   cohesionStrength: 1
+  flockDirection: {x: 0, y: 0, z: 0}
+  flockCentre: {x: 0, y: 0, z: 0}
+  separationDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &1468909202175776
 GameObject:
   m_ObjectHideFlags: 0
