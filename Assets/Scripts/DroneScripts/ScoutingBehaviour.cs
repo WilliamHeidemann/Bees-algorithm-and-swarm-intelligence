@@ -70,15 +70,10 @@ namespace DroneScripts
 
         private bool DetectNewResources(out Asteroid asteroid)
         {
-            var hits = Physics.OverlapSphereNonAlloc(drone.transform.position, DetectionRadius, _colliders, AsteroidLayerMask);
-            asteroid = null;
-            if (hits == 0) return false;
-            var unknownAsteroids = _colliders // nearby.
-                .Where(collider => collider != null)
-                .Select(hit => hit.GetComponent<Asteroid>())
-                .Where(asteroid => asteroid != null)
-                .Where(asteroid => !motherShip.resourceObjects.Contains(asteroid));
-            asteroid = unknownAsteroids.OrderByDescending(asteroid => asteroid.resource).FirstOrDefault();
+            asteroid = 
+                drone.gameManager.asteroids
+                    .Where(asteroid => !motherShip.resourceObjects.Contains(asteroid))
+                    .FirstOrDefault(asteroid => Vector3.Distance(asteroid.transform.position, drone.transform.position) < DetectionRadius);
             return asteroid != null;
         }
     }

@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour {
 
 	public static GameManager Instance;
 
-	public GameObject[] asteroids;
+	public Asteroid[] asteroids;
 	
 	public float mouseSensitivity = 5.0f;
 
@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
 	private void Awake()
 	{
 		Instance = this;
-		asteroids = GameObject.FindGameObjectsWithTag("Environment");
+		asteroids = FindObjectsOfType<Asteroid>();
 	}
 
 	// Use this for initialization
