@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Dreadnaught : MonoBehaviour {
-
+public class Dreadnaught : MonoBehaviour
+{
+    
     //Missiles
 	public GameObject missile;
 	public float missileAmount = 10;
@@ -48,7 +49,7 @@ public class Dreadnaught : MonoBehaviour {
         Missiles();
 
         MoveToWaypoints();
-	}
+    }
 
 
     //Controls manual firing and regeneration of Dreadnaught missiles

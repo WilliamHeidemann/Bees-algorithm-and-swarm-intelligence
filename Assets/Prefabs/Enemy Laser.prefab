@@ -245,9 +245,9 @@ GameObject:
   - component: {fileID: 473864}
   - component: {fileID: 6527554}
   - component: {fileID: 5457934}
-  - component: {fileID: 11423136}
+  - component: {fileID: 6944255628415461125}
   m_Layer: 0
-  m_Name: Laser
+  m_Name: Enemy Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &11423136
+--- !u!114 &6944255628415461125
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -308,15 +308,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 164730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 592bf23a2e285b742b2ba2b5e0617b01, type: 3}
+  m_Script: {fileID: 11500000, guid: cb656ee1491399148abf5e398c3cb031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 75
+  damage: 1
   projectileSpeed: 550
-  lifeTime: 3
-  trail: {fileID: 109174}
-  hitEffect: {fileID: 124664, guid: 9f960b5cfaf5bbf4d9642721fec5d409, type: 3}
-  launchSound: {fileID: 173942, guid: 7fa99c03c21ff694f9f603e8a7b5d941, type: 3}
+  lifeTime: 2
+  trail: {fileID: 0}
+  hitEffect: {fileID: 0}
+  launchSound: {fileID: 0}
   flightSound: {fileID: 0}
-  hitSound: {fileID: 149020, guid: 54770f60a27eacb489f22fb0cf707b2a, type: 3}
-  SentByPlayer: 0
+  hitSound: {fileID: 0}

@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Laser : Projectile {
-
+public class Laser : Projectile
+{
+	
 	// Use this for initialization
 	void Start () {
 
@@ -24,12 +25,14 @@ public class Laser : Projectile {
 	}
 
 
-	void OnTriggerEnter(Collider otherObject){
-		if (otherObject.tag == "Enemy" || otherObject.tag == "Boid" || otherObject.tag == "Environment") {
-			otherObject.SendMessage ("takeDamage", damage, SendMessageOptions.DontRequireReceiver);
+	void OnTriggerEnter(Collider otherObject)
+	{
+		if (otherObject.CompareTag("Enemy"))
+		{
+			otherObject.GetComponent<Enemy>().TakeDamage(10);
 			Instantiate(hitEffect, transform.position, transform.rotation);
 			Instantiate(hitSound, transform.position, transform.rotation);
-			Destroy (this.gameObject);
-		} 
+			Destroy (gameObject);
+		}
 	}
 }

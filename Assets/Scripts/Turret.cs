@@ -79,7 +79,7 @@ public class Turret : MonoBehaviour {
 					//Fire Projectiles
 					Instantiate (turretProjectile, turretMuzzles [0].transform.position, turretMuzzles [0].transform.rotation);
 					Instantiate (turretProjectile, turretMuzzles [1].transform.position, turretMuzzles [1].transform.rotation);
-
+					
 					//Spawn Visual Effects
 					Instantiate (turretFireEffect, turretMuzzles [0].transform.position, turretMuzzles [0].transform.rotation);
 					Instantiate (turretFireEffect, turretMuzzles [1].transform.position, turretMuzzles [1].transform.rotation);

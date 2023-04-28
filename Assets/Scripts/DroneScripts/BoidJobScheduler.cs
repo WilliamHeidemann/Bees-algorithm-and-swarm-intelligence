@@ -11,17 +11,14 @@ using UnityEngine.Jobs;
 
 public class BoidJobScheduler : MonoBehaviour
 {
-    private BoidBehaviour[] _boidBehaviours;
-    private Transform[] _boidTransforms;
+    private List<BoidBehaviour> _boidBehaviours;
+    private List<Transform> _boidTransforms;
     
     private void Update()
     {
-        if (_boidBehaviours == null)
-        {
-            _boidBehaviours = FindObjectsOfType<BoidBehaviour>();
-            _boidTransforms = _boidBehaviours.Select(boid => boid.transform).ToArray();
-        }
-        
+        _boidBehaviours = FindObjectsOfType<BoidBehaviour>().ToList();
+        _boidTransforms = _boidBehaviours.Select(boid => boid.transform).ToList();
+
         var positions = _boidTransforms.Select(trans => trans.position).ToArray();
         var nativeArrayPositions = new NativeArray<Vector3>(positions, Allocator.TempJob);
         
@@ -32,13 +29,13 @@ public class BoidJobScheduler : MonoBehaviour
         {
             boidPositions = nativeArrayPositions,
             boidForwards = nativeArrayForwards,
-            boids = new NativeArray<BoidValues>(_boidTransforms.Length, Allocator.TempJob)
+            boids = new NativeArray<BoidValues>(_boidTransforms.Count, Allocator.TempJob)
         };
         
-        var jobHandle = boidJob.Schedule(_boidTransforms.Length, 1);
+        var jobHandle = boidJob.Schedule(_boidTransforms.Count, 1);
         jobHandle.Complete();
         
-        for (int i = 0; i < _boidBehaviours.Length; i++)
+        for (int i = 0; i < _boidBehaviours.Count; i++)
         {
             _boidBehaviours[i].flockDirection = boidJob.boids[i].flockDirection;
             _boidBehaviours[i].flockCentre = boidJob.boids[i].flockCentre;

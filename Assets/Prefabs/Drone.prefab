@@ -194,6 +194,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   fuel: 100
   capacity: 0
+  enemyLaser: {fileID: 6944255628415461125, guid: c4bb899b4bfc79c468fd0d87ce7fc5d3,
+    type: 3}
 --- !u!114 &7842054084723565826
 MonoBehaviour:
   m_ObjectHideFlags: 0

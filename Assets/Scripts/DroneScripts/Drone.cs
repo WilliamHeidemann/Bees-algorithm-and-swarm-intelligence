@@ -13,6 +13,7 @@ public class Drone : Enemy
     public DroneBehaviour droneBehaviour;
     public float fuel = 100f;
     public int capacity;
+    public EnemyLaser enemyLaser;
 
     void Start() 
     {
@@ -24,5 +25,10 @@ public class Drone : Enemy
     void Update()
     {
         droneBehaviour.Execute();
+    }
+
+    public void ShootPlayer()
+    {
+        Instantiate(enemyLaser, transform.position, transform.rotation);
     }
 }
