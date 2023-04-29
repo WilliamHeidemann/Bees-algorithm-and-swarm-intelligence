@@ -36,9 +36,8 @@ public class Mothership : MonoBehaviour
         for (int i = 0; i < numberOfEnemies; i++) 
         {
             var spawnPosition = spawnLocation.transform.position;
-            spawnPosition.x += Random.Range(-50, 50);
-            spawnPosition.y += Random.Range(-50, 50);
-            spawnPosition.z += Random.Range(-50, 50);
+            var offset = Random.onUnitSphere * 200;
+            spawnPosition += offset;
             var instantiatedEnemy = Instantiate(enemy, spawnPosition, Random.rotation);
             instantiatedEnemy.droneBehaviour = new IdleBehaviour(instantiatedEnemy);
             idle.Add(instantiatedEnemy);
@@ -64,19 +63,19 @@ public class Mothership : MonoBehaviour
             Swap(drone, idle, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
-        while (scouts.Count > 0)
+        while (scouts.Any())
         {
             var drone = scouts[0];
             Swap(drone, scouts, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
-        while (foragers.Count > 0)
+        while (foragers.Any())
         {
             var drone = foragers[0];
             Swap(drone, foragers, attackers);
             drone.droneBehaviour = new AttackBehaviour(drone);
         }
-        while (eliteForagers.Count > 0)
+        while (eliteForagers.Any())
         {
             var drone = eliteForagers[0];
             Swap(drone, eliteForagers, attackers);
@@ -84,7 +83,7 @@ public class Mothership : MonoBehaviour
         }
     }
     
-    private bool ShouldRecruitScouts() => scouts.Count < _maxScouts && idle.Count > 0 && RefueledIdleDrones.Any();
+    private bool ShouldRecruitScouts() => scouts.Count < _maxScouts && RefueledIdleDrones.Any();
     
     private void RecruitScouts()
     {
@@ -98,7 +97,7 @@ public class Mothership : MonoBehaviour
 
     private Drone BestFitScout() => RefueledIdleDrones.OrderBy(drone => drone.capacity).ThenByDescending(drone => drone.fuel).First();
 
-    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < _maxEliteForagers && RefueledIdleDrones.Any() && resourceObjects.Count > 0;
+    private bool ShouldRecruitEliteForagers() => eliteForagers.Count < _maxEliteForagers && RefueledIdleDrones.Any() && resourceObjects.Any();
     private void RecruitEliteForagers()
     {
         while (ShouldRecruitEliteForagers())
@@ -126,7 +125,7 @@ public class Mothership : MonoBehaviour
         return resourceObjects[^1];
     }
     
-    private bool ShouldRecruitForagers() => foragers.Count < _maxForagers && RefueledIdleDrones.Any() && resourceObjects.Count > 0;
+    private bool ShouldRecruitForagers() => foragers.Count < _maxForagers && RefueledIdleDrones.Any() && resourceObjects.Any();
     private void RecruitForagers()
     {
         while (ShouldRecruitForagers())
