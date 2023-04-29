@@ -21,7 +21,7 @@ namespace DroneScripts
         public virtual void Execute()
         {
             MoveTowardsTarget();
-            RotateTowardTarget();
+            RotateTowardsTarget();
             ManageFuel();
         }
 
@@ -33,7 +33,7 @@ namespace DroneScripts
             Debug.DrawLine(drone.transform.position, target, lineColor);
         }
         
-        protected virtual void RotateTowardTarget()
+        protected virtual void RotateTowardsTarget()
         {
             drone.transform.forward = drone.rb.velocity;
         }

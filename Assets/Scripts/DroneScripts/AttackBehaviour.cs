@@ -57,7 +57,7 @@ namespace DroneScripts
             target = playerPosition + separationDirection / distanceVector.magnitude * SeparationWeight + offset;
         }
 
-        protected override void RotateTowardTarget()
+        protected override void RotateTowardsTarget()
         {
             var transform = drone.transform;
             transform.forward = _playerTransform.position - transform.position;

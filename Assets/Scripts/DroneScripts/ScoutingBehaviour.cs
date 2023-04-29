@@ -8,8 +8,6 @@ namespace DroneScripts
     public class ScoutingBehaviour : DroneBehaviour
     {
         public Asteroid newResourceObject;
-        private readonly Collider[] _colliders = new Collider[4];
-        private static readonly int AsteroidLayerMask = 1 << LayerMask.NameToLayer("Asteroid");
         
         public ScoutingBehaviour(Drone drone) : base(drone)
         {
