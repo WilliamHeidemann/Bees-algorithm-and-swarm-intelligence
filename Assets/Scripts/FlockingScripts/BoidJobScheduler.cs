@@ -13,7 +13,6 @@ public class BoidJobScheduler : MonoBehaviour
 {
     private List<BoidBehaviour> _boidBehaviours;
     private List<Transform> _boidTransforms;
-    
     private void Update()
     {
         _boidBehaviours = FindObjectsOfType<BoidBehaviour>().ToList();

@@ -115,12 +115,11 @@ public class Mothership : MonoBehaviour
 
     private Asteroid ResourceToSearch()
     {
-        var roll = Random.value;
-        var limit = 0.50f;
+        var roll = Random.value; 
         foreach (var resource in resourceObjects)
         {
-            if (roll > limit) return resource;
-            limit -= 20f;
+            if (roll > 0.5f) return resource;
+            roll += 0.2f;
         }
         return resourceObjects[^1];
     }
@@ -133,7 +132,7 @@ public class Mothership : MonoBehaviour
             var forager = BestFitForager(); 
             Swap(forager, idle, foragers);
             var foragingBehaviour = new ForagingBehaviour(forager);
-            foragingBehaviour.SetResourceTarget(resourceObjects[0]);
+            foragingBehaviour.SetResourceTarget(ResourceToSearch());
             forager.droneBehaviour = foragingBehaviour;
         }
     }

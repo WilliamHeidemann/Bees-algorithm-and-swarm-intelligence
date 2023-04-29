@@ -14,7 +14,6 @@ public class Drone : Enemy
     public float fuel = 100f;
     public int capacity;
     public EnemyLaser enemyLaser;
-
     void Start() 
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
