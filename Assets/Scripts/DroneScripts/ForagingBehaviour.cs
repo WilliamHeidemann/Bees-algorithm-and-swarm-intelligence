@@ -28,6 +28,7 @@ namespace DroneScripts
                 {
                     target = motherShip.transform.position;
                     _isResourcePickedUp = true;
+                    resourceToCollect.resource -= 0.02f;
                 }
                 else
                 {
