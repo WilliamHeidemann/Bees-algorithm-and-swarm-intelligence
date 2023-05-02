@@ -105,7 +105,7 @@ public class Mothership : MonoBehaviour
             var eliteForager = BestFitEliteForager();
             Swap(eliteForager, idle, eliteForagers);
             var eliteBehaviour = new EliteForagingBehaviour(eliteForager);
-            eliteBehaviour.SetResourceTarget(ResourceToSearch());
+            eliteBehaviour.SetResourceTarget(ResourceToSearch(eliteForager));
             eliteForager.droneBehaviour = eliteBehaviour;
         }
     }
@@ -113,16 +113,21 @@ public class Mothership : MonoBehaviour
     private Drone BestFitEliteForager() =>
         RefueledIdleDrones.OrderByDescending(drone => drone.fuel).ThenByDescending(drone => drone.capacity).First();
 
-    private Asteroid ResourceToSearch()
+    private Asteroid ResourceToSearch(Drone forager)
     {
         var roll = Random.value; 
-        foreach (var resource in resourceObjects)
+        foreach (var resource in HeuristicResourceObjects(forager))
         {
             if (roll > 0.5f) return resource;
             roll += 0.2f;
         }
-        return resourceObjects[^1];
+        return resourceObjects[^1]; // Pick the end of the list only if there are too few resources in the list
     }
+
+    private List<Asteroid> HeuristicResourceObjects(Drone forager) =>
+        resourceObjects.OrderByDescending(
+            asteroid => asteroid.resource / Vector3.Distance(forager.transform.position, asteroid.transform.position)
+            ).ToList();
     
     private bool ShouldRecruitForagers() => foragers.Count < _maxForagers && RefueledIdleDrones.Any() && resourceObjects.Any();
     private void RecruitForagers()
@@ -132,7 +137,7 @@ public class Mothership : MonoBehaviour
             var forager = BestFitForager(); 
             Swap(forager, idle, foragers);
             var foragingBehaviour = new ForagingBehaviour(forager);
-            foragingBehaviour.SetResourceTarget(ResourceToSearch());
+            foragingBehaviour.SetResourceTarget(ResourceToSearch(forager));
             forager.droneBehaviour = foragingBehaviour;
         }
     }
@@ -148,8 +153,7 @@ public class Mothership : MonoBehaviour
     
     public void DiscoverResource(Asteroid asteroid, Drone scout)
     {
-        resourceObjects.Add(asteroid);
-        resourceObjects.Sort((a, b) => b.resource.CompareTo(a.resource));
+        if (!resourceObjects.Contains(asteroid)) resourceObjects.Add(asteroid);
         _neighborhoodFitness.TryAdd(asteroid, 10);
         Swap(scout, scouts, idle);
         scout.droneBehaviour = new IdleBehaviour(scout);
@@ -157,7 +161,7 @@ public class Mothership : MonoBehaviour
 
     public void CollectResource(Asteroid asteroid, Drone forager)
     {
-        // resource pool += asteroid.resource
+        // Here the amount of resources carried by the forager can be added to the mothership resource pool
         Swap(forager, foragers, idle);
         forager.droneBehaviour = new IdleBehaviour(forager);
     }

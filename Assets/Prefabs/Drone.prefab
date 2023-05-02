@@ -192,7 +192,7 @@ MonoBehaviour:
   deathSound: {fileID: 103974, guid: 5682ac4627f4d5248bd4fdbc79756da8, type: 3}
   gameManager: {fileID: 0}
   rb: {fileID: 0}
-  fuel: 100
+  fuel: 500
   capacity: 0
   enemyLaser: {fileID: 6944255628415461125, guid: c4bb899b4bfc79c468fd0d87ce7fc5d3,
     type: 3}

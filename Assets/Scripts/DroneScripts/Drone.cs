@@ -11,7 +11,7 @@ public class Drone : Enemy
     public GameManager gameManager;
     public Rigidbody rb;
     public DroneBehaviour droneBehaviour;
-    public float fuel = 100f;
+    public float fuel = 500f;
     public int capacity;
     public EnemyLaser enemyLaser;
     void Start() 
